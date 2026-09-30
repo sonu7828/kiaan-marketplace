@@ -24,14 +24,27 @@ class ProductService {
     }
   }
 
-  // --- Products Retrieval ---
   getAllProducts() {
     try {
       if (typeof window !== 'undefined' && window.localStorage) {
         const stored = localStorage.getItem(STORAGE_KEYS.PRODUCTS);
         if (stored) {
           const parsed = JSON.parse(stored);
-          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            return parsed.map(p => {
+              const def = DEFAULT_PRODUCTS.find(d => d.id === p.id);
+              if (!def) return p;
+              return {
+                ...def,
+                ...p,
+                docUrl: p.docUrl || def.docUrl,
+                pricing: (p.pricing && p.pricing.priceDisplay && p.pricing.priceDisplay !== 'Contact for Pricing')
+                  ? p.pricing
+                  : def.pricing,
+                screenshots: (p.screenshots && p.screenshots.length > 0) ? p.screenshots : def.screenshots
+              };
+            });
+          }
         }
       }
     } catch {
@@ -41,7 +54,7 @@ class ProductService {
   }
 
   getPublishedProducts() {
-    return this.getAllProducts().filter(p => p.status !== 'draft');
+    return this.getAllProducts().filter(p => p.status === 'published');
   }
 
   getFeaturedProducts() {
@@ -123,6 +136,24 @@ class ProductService {
     return { success: true, products: updated };
   }
 
+  archiveProduct(productId) {
+    const products = this.getAllProducts();
+    const updated = products.map(p => {
+      if (p.id === productId) {
+        return { ...p, status: p.status === 'archived' ? 'draft' : 'archived' };
+      }
+      return p;
+    });
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(updated));
+      }
+    } catch {
+      // storage error fallback
+    }
+    return { success: true, products: updated };
+  }
+
   resetDefaults() {
     try {
       if (typeof window !== 'undefined' && window.localStorage) {
@@ -177,6 +208,54 @@ class ProductService {
       // storage error fallback
     }
     return { success: true, inquiries: updated };
+  }
+
+  deleteInquiry(id) {
+    const inquiries = this.getInquiries();
+    const updated = inquiries.filter(inq => inq.id !== id);
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        localStorage.setItem(STORAGE_KEYS.INQUIRIES, JSON.stringify(updated));
+      }
+    } catch {
+      // storage error fallback
+    }
+    return { success: true, inquiries: updated };
+  }
+
+  getSettings() {
+    const defaults = {
+      marketplaceName: 'Kiaan Marketplace',
+      operatingCompany: 'Kiaan Technology Pvt Ltd',
+      supportEmail: 'contact@kiaantechnology.com',
+      salesHotline: '+91 (0) 80-KIENTECH',
+      inquiryRecipientEmail: 'quotes@kiaantechnology.com',
+      inquiryCcEmail: 'sales-lead@kiaantechnology.com',
+      inquiryDispatchMode: 'both',
+      webhookDispatchUrl: '',
+      primaryCurrency: 'INR',
+      allowCurrencyToggle: true
+    };
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        const stored = localStorage.getItem(STORAGE_KEYS.SETTINGS);
+        if (stored) return { ...defaults, ...JSON.parse(stored) };
+      }
+    } catch {
+      // storage error fallback
+    }
+    return defaults;
+  }
+
+  saveSettings(settings) {
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
+      }
+    } catch {
+      // storage error fallback
+    }
+    return { success: true, settings };
   }
 }
 

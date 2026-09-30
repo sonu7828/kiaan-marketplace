@@ -2,14 +2,16 @@ import React, { useState } from 'react';
 import { 
   Play, 
   ArrowRight, 
-  ExternalLink,
-  Check,
-  Search,
-  SlidersHorizontal
+  Check, 
+  SlidersHorizontal,
+  Image as ImageIcon,
+  FileText
 } from 'lucide-react';
 import { CATEGORIES } from '../data/products';
 import { productService } from '../services/productService';
 import ProductScreenshot from './ProductScreenshot';
+import ScreenshotGalleryModal from './ScreenshotGalleryModal';
+import DocumentationModal from './DocumentationModal';
 
 export default function FeaturedSoftware({ 
   products = null,
@@ -21,6 +23,10 @@ export default function FeaturedSoftware({
 }) {
   const [activeFilterTab, setActiveFilterTab] = useState(selectedCategory || 'all');
   const [sortBy, setSortBy] = useState('featured');
+
+  // Modals local state
+  const [screenshotModalProduct, setScreenshotModalProduct] = useState(null);
+  const [docModalProduct, setDocModalProduct] = useState(null);
 
   const sourceProducts = products && products.length > 0 ? products : productService.getPublishedProducts();
 
@@ -37,7 +43,7 @@ export default function FeaturedSoftware({
     
     const matchesSearch = !query || 
       product.name.toLowerCase().includes(query) ||
-      product.shortDesc.toLowerCase().includes(query) ||
+      (product.shortDesc && product.shortDesc.toLowerCase().includes(query)) ||
       (product.category && product.category.toLowerCase().includes(query)) ||
       tags.some(t => typeof t === 'string' && t.toLowerCase().includes(query));
 
@@ -58,6 +64,14 @@ export default function FeaturedSoftware({
     if (onSelectCategory) onSelectCategory(catId);
   };
 
+  const handleLiveDemoClick = (product) => {
+    if (onLaunchDemo) {
+      onLaunchDemo(product.id || product);
+    } else if (product.demoUrl && product.demoUrl.startsWith('http')) {
+      window.open(product.demoUrl, '_blank', 'noopener,noreferrer');
+    }
+  };
+
   return (
     <section className="catalog-section" id="featured-software">
       <div className="container">
@@ -65,8 +79,8 @@ export default function FeaturedSoftware({
         {/* Section Header */}
         <div className="catalog-header-bar">
           <div>
-            <h2 className="catalog-title">Explore Software</h2>
-            <p className="catalog-subtitle">Production-ready, self-hosted business solutions built by Kiaan Technology.</p>
+            <h2 className="catalog-title">Explore Production Software</h2>
+            <p className="catalog-subtitle">Production-ready, self-hosted enterprise solutions built by Kiaan Technology.</p>
           </div>
 
           {/* Sort Selector */}
@@ -84,27 +98,31 @@ export default function FeaturedSoftware({
           </div>
         </div>
 
-        {/* Filter Pills Bar */}
-        <div className="filter-tabs-strip" role="tablist">
+        {/* Professional Enterprise Category Tabs (Linear / Stripe / Vercel style) */}
+        <div className="pro-category-nav-bar" role="tablist" aria-label="Software Categories">
           <button 
+            type="button"
             role="tab"
             aria-selected={activeFilterTab === 'all'}
-            className={`filter-tab ${activeFilterTab === 'all' ? 'active' : ''}`}
+            className={`pro-category-tab ${activeFilterTab === 'all' ? 'active' : ''}`}
             onClick={() => handleTabClick('all')}
           >
-            All Software ({sourceProducts.length})
+            <span className="tab-title">All Software</span>
+            <span className="tab-count-badge">{sourceProducts.length}</span>
           </button>
           {CATEGORIES.map(cat => {
             const count = sourceProducts.filter(p => p.categoryId === cat.id).length;
             return (
               <button 
-                key={cat.id}
+                key={cat.id} 
+                type="button"
                 role="tab"
                 aria-selected={activeFilterTab === cat.id}
-                className={`filter-tab ${activeFilterTab === cat.id ? 'active' : ''}`}
+                className={`pro-category-tab ${activeFilterTab === cat.id ? 'active' : ''}`}
                 onClick={() => handleTabClick(cat.id)}
               >
-                {cat.name} ({count})
+                <span className="tab-title">{cat.name}</span>
+                <span className={`tab-count-badge ${count === 0 ? 'badge-zero' : ''}`}>{count}</span>
               </button>
             );
           })}
@@ -137,29 +155,37 @@ export default function FeaturedSoftware({
           <div className="software-cards-grid">
             {filteredProducts.map((product) => {
               const tags = (product.features || []).slice(0, 3);
-              const hasLiveDemo = product.demoUrl && product.demoUrl.trim().startsWith('http');
+              const priceText = product.pricing?.priceDisplay || '₹49,999';
 
               return (
-                <div key={product.id} className="market-product-card">
+                <div key={product.id} className="market-product-card software-card-enhanced">
                   
                   {/* Top Screenshot Area */}
                   <div 
                     className="card-screenshot-wrap"
                     onClick={() => onViewDetails && onViewDetails(product)}
                   >
-                    <ProductScreenshot product={product} height={165} />
-                    <span className="card-cat-badge">{product.category}</span>
+                    <ProductScreenshot product={product} height={175} />
+                    <div className="card-top-badges">
+                      <span className="card-cat-badge">{product.category}</span>
+                      {product.isFlagship && (
+                        <span className="badge badge-gold">Flagship</span>
+                      )}
+                    </div>
                   </div>
 
                   {/* Card Main Info */}
                   <div className="card-info-pane">
                     
-                    <h3 
-                      className="card-name"
-                      onClick={() => onViewDetails && onViewDetails(product)}
-                    >
-                      {product.name}
-                    </h3>
+                    <div className="flex items-start justify-between gap-2">
+                      <h3 
+                        className="card-name"
+                        onClick={() => onViewDetails && onViewDetails(product)}
+                        title="Click to view full specifications"
+                      >
+                        {product.name}
+                      </h3>
+                    </div>
 
                     <p className="card-one-line-desc">
                       {product.shortDesc}
@@ -183,42 +209,57 @@ export default function FeaturedSoftware({
                       </div>
                     )}
 
-                    {/* Card Bottom Pricing & Actions */}
-                    <div className="card-bottom-row">
-                      
-                      <div className="card-pricing-info">
-                        <span className="price-tag">
-                          {product.pricing?.priceDisplay || 'Contact for Pricing'}
-                        </span>
-                        <span className="license-tag">Perpetual License</span>
+                    {/* Price Section */}
+                    <div className="card-price-container">
+                      <div className="price-tag-wrap">
+                        <span className="price-main">{priceText}</span>
+                        <span className="price-sub">One-Time License • Self-Hosted</span>
                       </div>
+                    </div>
 
-                      <div className="card-btn-group">
-                        {hasLiveDemo ? (
-                          <a 
-                            href={product.demoUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="btn btn-secondary btn-sm demo-action-btn"
-                            title={`Live demo for ${product.name}`}
-                          >
-                            <Play size={12} />
-                            <span>Demo</span>
-                          </a>
-                        ) : (
-                          <span className="demo-soon-pill">Demo Soon</span>
-                        )}
+                    {/* The 3 Dedicated Action Options: Live Demo, Screenshot, Document */}
+                    <div className="card-triple-actions">
+                      <button 
+                        type="button"
+                        className="action-btn demo-btn"
+                        onClick={() => handleLiveDemoClick(product)}
+                        title={`Test live interactive demo for ${product.name}`}
+                      >
+                        <Play size={13} />
+                        <span>View Live Demo</span>
+                      </button>
 
-                        <button 
-                          type="button"
-                          className="btn btn-primary btn-sm details-action-btn"
-                          onClick={() => onViewDetails && onViewDetails(product)}
-                        >
-                          <span>Details</span>
-                          <ArrowRight size={13} />
-                        </button>
-                      </div>
+                      <button 
+                        type="button"
+                        className="action-btn screenshot-btn"
+                        onClick={() => setScreenshotModalProduct(product)}
+                        title={`View high-resolution screenshots for ${product.name}`}
+                      >
+                        <ImageIcon size={13} />
+                        <span>View Screenshot</span>
+                      </button>
 
+                      <button 
+                        type="button"
+                        className="action-btn doc-btn"
+                        onClick={() => setDocModalProduct(product)}
+                        title={`View technical architecture and deployment documentation for ${product.name}`}
+                      >
+                        <FileText size={13} />
+                        <span>View Document</span>
+                      </button>
+                    </div>
+
+                    {/* Card Bottom Quick Link */}
+                    <div className="card-details-footer">
+                      <button 
+                        type="button"
+                        className="btn-link-details"
+                        onClick={() => onViewDetails && onViewDetails(product)}
+                      >
+                        <span>Full Product Details</span>
+                        <ArrowRight size={13} />
+                      </button>
                     </div>
 
                   </div>
@@ -230,6 +271,25 @@ export default function FeaturedSoftware({
         )}
 
       </div>
+
+      {/* Screenshot Gallery Modal */}
+      {screenshotModalProduct && (
+        <ScreenshotGalleryModal 
+          product={screenshotModalProduct}
+          onClose={() => setScreenshotModalProduct(null)}
+          onViewDetails={onViewDetails}
+        />
+      )}
+
+      {/* Documentation Modal */}
+      {docModalProduct && (
+        <DocumentationModal 
+          product={docModalProduct}
+          onClose={() => setDocModalProduct(null)}
+          onViewDetails={onViewDetails}
+        />
+      )}
+
     </section>
   );
 }

@@ -1,34 +1,31 @@
 import React, { useState } from 'react';
-import { 
-  ArrowRight, 
-  Search, 
-  Play, 
-  Server, 
-  ShieldCheck, 
-  CheckCircle2, 
-  ExternalLink 
-} from 'lucide-react';
+import { Search, ArrowRight } from 'lucide-react';
 import { CATEGORIES } from '../data/products';
-import { productService } from '../services/productService';
-import ProductScreenshot from './ProductScreenshot';
 
-export default function Hero({ onExploreClick, onDemoClick, onSearchSubmit, onViewDetails }) {
+export default function Hero({ onSearchSubmit, selectedCategory = 'all', onCategorySelect }) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [activeCat, setActiveCat] = useState(selectedCategory || 'all');
 
-  const flagshipProduct = productService.getAllProducts().find(p => p.isFlagship) || productService.getAllProducts()[0];
+  React.useEffect(() => {
+    if (selectedCategory) {
+      setActiveCat(selectedCategory);
+    }
+  }, [selectedCategory]);
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (onSearchSubmit) {
-      onSearchSubmit(searchQuery, selectedCategory);
+      onSearchSubmit(searchQuery, activeCat);
     }
     const catSection = document.getElementById('featured-software');
     if (catSection) catSection.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const handleCategoryShortcut = (catId) => {
-    setSelectedCategory(catId);
+  const handleCategoryClick = (catId) => {
+    setActiveCat(catId);
+    if (onCategorySelect) {
+      onCategorySelect(catId);
+    }
     if (onSearchSubmit) {
       onSearchSubmit(searchQuery, catId);
     }
@@ -37,183 +34,68 @@ export default function Hero({ onExploreClick, onDemoClick, onSearchSubmit, onVi
   };
 
   return (
-    <section className="marketplace-hero" id="hero">
-      <div className="container hero-split-grid">
+    <section className="marketplace-hero hero-streamlined" id="hero">
+      <div className="container hero-streamlined-container">
         
-        {/* Left: Headline, Short Description, Search, Actions */}
-        <div className="hero-content">
-          
-          <div className="hero-eyebrow">
-            <span className="eyebrow-dot" />
-            <span>BUSINESS SOFTWARE MARKETPLACE</span>
-          </div>
+        {/* Single Punchy Headline with Colorful Lighting Gradient */}
+        <h1 className="hero-streamlined-title">
+          <span>Production-Ready Business Software, </span>
+          <span className="hero-highlight-gradient">Built to Deploy & Scale</span>
+        </h1>
 
-          <h1 className="hero-title">
-            Business Software for <span className="highlight-text">Every Stage of Growth</span>
-          </h1>
-
-          <p className="hero-subtitle">
-            Explore ready-to-use business software, review product features, try available demos, and get solutions customized for your business.
-          </p>
-
-          {/* Prominent Search Bar */}
-          <form className="hero-search-bar" onSubmit={handleSearch}>
-            <div className="hero-search-cat">
-              <select 
-                value={selectedCategory} 
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                aria-label="Select Category"
+        {/* Centered Search Bar with Backlit Glow Effects */}
+        <form className="hero-streamlined-search-form" onSubmit={handleSearch}>
+          <div className="hero-search-glow-backdrop" aria-hidden="true"></div>
+          <div className="hero-search-inner-wrap">
+            <Search size={18} className="hero-search-icon" />
+            <input 
+              type="text" 
+              placeholder="Search software (e.g. ERP, CRM, Payroll, Invoicing, Inventory)..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="hero-streamlined-input"
+              aria-label="Search software suites"
+            />
+            {searchQuery && (
+              <button 
+                type="button" 
+                onClick={() => setSearchQuery('')}
+                className="hero-search-clear-btn"
+                aria-label="Clear search text"
               >
-                <option value="all">All Categories</option>
-                {CATEGORIES.map(c => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="hero-search-divider" />
-
-            <div className="hero-search-input-group">
-              <Search size={16} className="search-input-icon" />
-              <input 
-                type="text" 
-                placeholder="Search software (e.g. ERP, CRM, Payroll, Invoicing)..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-
-            <button type="submit" className="btn btn-primary hero-btn-search">
+                ✕
+              </button>
+            )}
+            <button type="submit" className="hero-streamlined-btn">
               <span>Search</span>
               <ArrowRight size={14} />
             </button>
-          </form>
-
-          {/* Category Shortcuts */}
-          <div className="hero-shortcuts">
-            <span className="shortcuts-label">POPULAR:</span>
-            <div className="shortcuts-chips">
-              <button 
-                type="button" 
-                className={`shortcut-chip ${selectedCategory === 'erp' ? 'active' : ''}`}
-                onClick={() => handleCategoryShortcut('erp')}
-              >
-                ERP Systems
-              </button>
-              <button 
-                type="button" 
-                className={`shortcut-chip ${selectedCategory === 'crm' ? 'active' : ''}`}
-                onClick={() => handleCategoryShortcut('crm')}
-              >
-                CRM & Sales
-              </button>
-              <button 
-                type="button" 
-                className={`shortcut-chip ${selectedCategory === 'hrms' ? 'active' : ''}`}
-                onClick={() => handleCategoryShortcut('hrms')}
-              >
-                HRMS & Payroll
-              </button>
-              <button 
-                type="button" 
-                className={`shortcut-chip ${selectedCategory === 'inventory' ? 'active' : ''}`}
-                onClick={() => handleCategoryShortcut('inventory')}
-              >
-                Inventory & WMS
-              </button>
-              <button 
-                type="button" 
-                className={`shortcut-chip ${selectedCategory === 'pos' ? 'active' : ''}`}
-                onClick={() => handleCategoryShortcut('pos')}
-              >
-                Billing & POS
-              </button>
-            </div>
           </div>
+        </form>
 
-          {/* Primary & Secondary CTAs */}
-          <div className="hero-cta-row">
+        {/* Horizontal Categories Bar in Strictly a Single Line */}
+        <div className="hero-categories-horizontal-bar" role="tablist" aria-label="Software Categories">
+          <button 
+            type="button" 
+            role="tab"
+            aria-selected={activeCat === 'all'}
+            className={`hero-cat-chip ${activeCat === 'all' ? 'active' : ''}`}
+            onClick={() => handleCategoryClick('all')}
+          >
+            All Software
+          </button>
+          {CATEGORIES.map(c => (
             <button 
+              key={c.id} 
               type="button" 
-              className="btn btn-primary btn-md"
-              onClick={onExploreClick}
+              role="tab"
+              aria-selected={activeCat === c.id}
+              className={`hero-cat-chip ${activeCat === c.id ? 'active' : ''}`}
+              onClick={() => handleCategoryClick(c.id)}
             >
-              <span>Browse Catalog</span>
-              <ArrowRight size={15} />
+              {c.name}
             </button>
-            <a 
-              href="#customization-services" 
-              className="btn btn-secondary btn-md"
-            >
-              <span>Custom Development</span>
-            </a>
-          </div>
-
-          {/* Trust Reassurance Strip */}
-          <div className="hero-trust-indicators">
-            <div className="trust-pill">
-              <Server size={13} className="text-orange" />
-              <span>Self-Hosted & Cloud</span>
-            </div>
-            <div className="trust-pill">
-              <CheckCircle2 size={13} className="text-orange" />
-              <span>Source Code Included</span>
-            </div>
-            <div className="trust-pill">
-              <ShieldCheck size={13} className="text-orange" />
-              <span>Direct Engineer Support</span>
-            </div>
-          </div>
-
-        </div>
-
-        {/* Right: Software Interface Preview */}
-        <div className="hero-preview-col">
-          <div className="hero-preview-card">
-            
-            <div className="preview-card-header">
-              <div>
-                <span className="preview-label">FEATURED SOFTWARE</span>
-                <h3 className="preview-name">{flagshipProduct ? flagshipProduct.name : 'KiaanERP Enterprise'}</h3>
-              </div>
-              <span className="preview-badge">Self-Hosted</span>
-            </div>
-
-            {/* Software Screenshot Frame */}
-            <div className="preview-screenshot-container">
-              <ProductScreenshot product={flagshipProduct} height={230} />
-            </div>
-
-            {/* Bottom Action Bar */}
-            <div className="preview-card-footer">
-              <div className="preview-tech-info">
-                <span>Node.js • React • MySQL</span>
-              </div>
-              <div className="preview-buttons">
-                {flagshipProduct?.demoUrl && flagshipProduct.demoUrl.startsWith('http') ? (
-                  <button 
-                    type="button" 
-                    className="btn btn-primary btn-sm"
-                    onClick={() => onDemoClick && onDemoClick(flagshipProduct)}
-                  >
-                    <Play size={12} />
-                    <span>Live Demo</span>
-                  </button>
-                ) : (
-                  <span className="badge-demo-soon">Demo Coming Soon</span>
-                )}
-                <button 
-                  type="button" 
-                  className="btn btn-secondary btn-sm"
-                  onClick={() => onViewDetails && onViewDetails(flagshipProduct)}
-                >
-                  <span>View Details</span>
-                  <ArrowRight size={12} />
-                </button>
-              </div>
-            </div>
-
-          </div>
+          ))}
         </div>
 
       </div>

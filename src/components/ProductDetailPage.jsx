@@ -336,7 +336,7 @@ export default function ProductDetailPage({
                 ) : (
                   <div className="demo-unavailable-box">
                     <Info size={16} className="text-muted flex-shrink-0" />
-                    <span>Demo Coming Soon. A live demo environment for this software is currently being prepared.</span>
+                    <span>Demo Coming Soon</span>
                   </div>
                 )}
 

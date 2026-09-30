@@ -1,7 +1,17 @@
 import React from 'react';
-import { ShieldCheck, Lock, ArrowUpRight, Heart, Server } from 'lucide-react';
+import { ShieldCheck, Server } from 'lucide-react';
 
-export default function Footer({ onCategorySelect, onExploreClick, onAdminClick }) {
+export default function Footer({ onCategorySelect, onExploreClick, onNavigateSection, onOpenPortal }) {
+  const handleLinkClick = (e, sectionId) => {
+    e.preventDefault();
+    if (onNavigateSection) {
+      onNavigateSection(sectionId);
+    } else {
+      const el = document.getElementById(sectionId);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <footer className="global-footer" id="footer">
       <div className="container">
@@ -36,11 +46,11 @@ export default function Footer({ onCategorySelect, onExploreClick, onAdminClick 
           <div className="footer-col">
             <h4 className="footer-heading">COMPANY</h4>
             <ul className="footer-links">
-              <li><a href="#why-kiaan">About Kiaan Technology</a></li>
-              <li><a href="#why-kiaan">Engineering Standards</a></li>
-              <li><a href="#customization-services">Custom Development SLAs</a></li>
-              <li><a href="#why-kiaan">Proprietary IP Policy</a></li>
-              <li><a href="#customization-services">Contact Engineering</a></li>
+              <li><a href="#why-kiaan" onClick={(e) => handleLinkClick(e, 'why-kiaan')}>About Kiaan Technology</a></li>
+              <li><a href="#why-kiaan" onClick={(e) => handleLinkClick(e, 'why-kiaan')}>Engineering Standards</a></li>
+              <li><a href="#customization-services" onClick={(e) => handleLinkClick(e, 'customization-services')}>Custom Development Scope</a></li>
+              <li><a href="#why-kiaan" onClick={(e) => handleLinkClick(e, 'why-kiaan')}>Proprietary IP Policy</a></li>
+              <li><a href="#customization-services" onClick={(e) => handleLinkClick(e, 'customization-services')}>Contact Engineering</a></li>
             </ul>
           </div>
 
@@ -48,36 +58,35 @@ export default function Footer({ onCategorySelect, onExploreClick, onAdminClick 
           <div className="footer-col">
             <h4 className="footer-heading">SOFTWARE</h4>
             <ul className="footer-links">
-              <li><a href="#featured-software" onClick={onExploreClick}>Browse Full Catalog</a></li>
-              <li><a href="#featured-software" onClick={() => onCategorySelect('erp')}>ERP Enterprise Suite</a></li>
-              <li><a href="#featured-software" onClick={() => onCategorySelect('crm')}>Omnichannel CRM</a></li>
-              <li><a href="#featured-software" onClick={() => onCategorySelect('hrms')}>Workforce HRMS</a></li>
-              <li><a href="#featured-software" onClick={() => onCategorySelect('inventory')}>Supply Chain & WMS</a></li>
-              <li><a href="#featured-software" onClick={() => onCategorySelect('pos')}>Swift POS & Billing</a></li>
+              <li><a href="#featured-software" onClick={(e) => { e.preventDefault(); if (onExploreClick) onExploreClick(); }}>Browse Full Catalog</a></li>
+              <li><a href="#featured-software" onClick={(e) => { e.preventDefault(); if (onCategorySelect) onCategorySelect('erp'); }}>ERP Enterprise Suite</a></li>
+              <li><a href="#featured-software" onClick={(e) => { e.preventDefault(); if (onCategorySelect) onCategorySelect('crm'); }}>Omnichannel CRM</a></li>
+              <li><a href="#featured-software" onClick={(e) => { e.preventDefault(); if (onCategorySelect) onCategorySelect('hrms'); }}>Workforce HRMS</a></li>
+              <li><a href="#featured-software" onClick={(e) => { e.preventDefault(); if (onCategorySelect) onCategorySelect('inventory'); }}>Supply Chain & WMS</a></li>
+              <li><a href="#featured-software" onClick={(e) => { e.preventDefault(); if (onCategorySelect) onCategorySelect('pos'); }}>Swift POS & Billing</a></li>
             </ul>
           </div>
 
-          {/* Column 3: Support & Portal */}
+          {/* Column 3: Architecture & Support */}
           <div className="footer-col">
-            <h4 className="footer-heading">SUPPORT & PORTAL</h4>
+            <h4 className="footer-heading">ARCHITECTURE & SUPPORT</h4>
             <ul className="footer-links">
-              <li><a href="#support-licensing">Customer Portal Access</a></li>
-              <li><a href="#support-licensing">License Activation Guide</a></li>
-              <li><a href="#support-licensing">Domain Transfer Policy</a></li>
-              <li><a href="#support-licensing">Offline Grace Period Terms</a></li>
-              <li><a href="#faqs">Frequently Asked Questions</a></li>
+              <li><a href="#why-kiaan" onClick={(e) => handleLinkClick(e, 'why-kiaan')}>Deployment & Sovereignty</a></li>
+              <li><a href="#how-it-works" onClick={(e) => handleLinkClick(e, 'how-it-works')}>Software Delivery Workflow</a></li>
+              <li><a href="#why-kiaan" onClick={(e) => handleLinkClick(e, 'why-kiaan')}>Direct Engineering Support</a></li>
+              <li><a href="#faqs" onClick={(e) => handleLinkClick(e, 'faqs')}>Frequently Asked Questions</a></li>
+              <li><a href="#portal" onClick={(e) => { e.preventDefault(); if (onOpenPortal) onOpenPortal(); }}>Customer Portal Access</a></li>
             </ul>
           </div>
 
-          {/* Column 4: Legal & Policies */}
+          {/* Column 4: Governance & Policies */}
           <div className="footer-col">
-            <h4 className="footer-heading">LEGAL & POLICIES</h4>
+            <h4 className="footer-heading">GOVERNANCE & POLICIES</h4>
             <ul className="footer-links">
-              <li><a href="#support-licensing">Software License Agreement</a></li>
-              <li><a href="#support-licensing">Terms of Service</a></li>
-              <li><a href="#support-licensing">Privacy Policy</a></li>
-              <li><a href="#support-licensing">Refund & Cancellation Policy</a></li>
-              <li><a href="#support-licensing">Tax & GST Invoicing</a></li>
+              <li><a href="#why-kiaan" onClick={(e) => handleLinkClick(e, 'why-kiaan')}>Single-Vendor License Terms</a></li>
+              <li><a href="#why-kiaan" onClick={(e) => handleLinkClick(e, 'why-kiaan')}>Data Sovereignty & Privacy</a></li>
+              <li><a href="#customization-services" onClick={(e) => handleLinkClick(e, 'customization-services')}>Custom Work Terms</a></li>
+              <li><a href="#customization-services" onClick={(e) => handleLinkClick(e, 'customization-services')}>Commercial Estimates</a></li>
             </ul>
           </div>
 

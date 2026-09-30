@@ -1,9 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
-  Search, 
   Menu, 
   X, 
-  ChevronDown, 
   ShoppingCart,
   User,
   ArrowRight,
@@ -15,22 +13,20 @@ import {
   Cpu
 } from 'lucide-react';
 import { CATEGORIES } from '../data/products';
-import ClientPortalModal from './ClientPortalModal';
 
 export default function Header({ 
-  onSearchClick, 
+  onSearchClick: _onSearchClick, 
   onExploreClick, 
   onCategorySelect, 
+  onSearchSubmit: _onSearchSubmit,
   cartCount = 0,
-  onHomeClick
+  onHomeClick,
+  onNavigateSection,
+  onOpenPortal,
+  onOpenAdmin
 }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
-  const [navSearch, setNavSearch] = useState('');
-  const [portalModalOpen, setPortalModalOpen] = useState(false);
-  const searchInputRef = useRef(null);
-  const dropdownRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -40,32 +36,15 @@ export default function Header({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Click outside and Escape key handling for dropdown
+  // Escape key handling for mobile menu
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setCategoryDropdownOpen(false);
-      }
-    };
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
-        setCategoryDropdownOpen(false);
         setMobileMenuOpen(false);
       }
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        if (searchInputRef.current) {
-          searchInputRef.current.focus();
-        }
-      }
     };
-
-    document.addEventListener('mousedown', handleClickOutside);
     document.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleKeyDown);
-    };
+    return () => document.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   const getCategoryIcon = (iconName) => {
@@ -82,22 +61,14 @@ export default function Header({
 
   const handleNav = (sectionId, callback) => {
     setMobileMenuOpen(false);
-    setCategoryDropdownOpen(false);
     if (callback) {
       callback();
+    } else if (onNavigateSection) {
+      onNavigateSection(sectionId);
     } else {
       const el = document.getElementById(sectionId);
       if (el) el.scrollIntoView({ behavior: 'smooth' });
     }
-  };
-
-  const handleNavSearchSubmit = (e) => {
-    if (e) e.preventDefault();
-    if (onSearchSubmit) {
-      onSearchSubmit(navSearch, 'all');
-    }
-    const el = document.getElementById('featured-software');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
@@ -127,10 +98,8 @@ export default function Header({
             </div>
           </a>
 
-          {/* 2-5. Desktop Navigation Menu */}
+          {/* Desktop Navigation Menu — Single Line */}
           <nav className="desktop-nav-menu" aria-label="Main Navigation">
-            
-            {/* 2. Software Catalog */}
             <a 
               href="#featured-software" 
               className="nav-link"
@@ -142,56 +111,6 @@ export default function Header({
               Software Catalog
             </a>
 
-            {/* 3. Categories Dropdown */}
-            <div 
-              className="dropdown-wrap" 
-              ref={dropdownRef}
-              onMouseEnter={() => setCategoryDropdownOpen(true)}
-              onMouseLeave={() => setCategoryDropdownOpen(false)}
-            >
-              <button 
-                type="button" 
-                className={`nav-link dropdown-toggle ${categoryDropdownOpen ? 'active' : ''}`}
-                onClick={() => setCategoryDropdownOpen(!categoryDropdownOpen)}
-                aria-expanded={categoryDropdownOpen}
-                aria-haspopup="true"
-              >
-                <span>Categories</span>
-                <ChevronDown size={14} className={`chevron-icon ${categoryDropdownOpen ? 'rotated' : ''}`} />
-              </button>
-
-              {categoryDropdownOpen && (
-                <div className="dropdown-menu-card" role="menu">
-                  <div className="dropdown-grid">
-                    {CATEGORIES.map(cat => (
-                      <a 
-                        key={cat.id} 
-                        href="#featured-software"
-                        className="dropdown-item"
-                        role="menuitem"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          if (onCategorySelect) onCategorySelect(cat.id);
-                          setCategoryDropdownOpen(false);
-                          const el = document.getElementById('featured-software');
-                          if (el) el.scrollIntoView({ behavior: 'smooth' });
-                        }}
-                      >
-                        <div className="dropdown-item-icon">
-                          {getCategoryIcon(cat.icon)}
-                        </div>
-                        <div className="dropdown-item-info">
-                          <span className="item-title">{cat.name}</span>
-                          <span className="item-subtitle">{cat.count || 2} Suites</span>
-                        </div>
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* 4. Industry Solutions */}
             <a 
               href="#industry-solutions" 
               className="nav-link"
@@ -203,7 +122,17 @@ export default function Header({
               Industry Solutions
             </a>
 
-            {/* 5. Custom Development */}
+            <a 
+              href="#why-kiaan" 
+              className="nav-link"
+              onClick={(e) => {
+                e.preventDefault();
+                handleNav('why-kiaan');
+              }}
+            >
+              Why Kiaan
+            </a>
+
             <a 
               href="#customization-services" 
               className="nav-link"
@@ -212,37 +141,40 @@ export default function Header({
                 handleNav('customization-services');
               }}
             >
-              Custom Development
+              Customization Services
+            </a>
+
+            <a 
+              href="#faqs" 
+              className="nav-link"
+              onClick={(e) => {
+                e.preventDefault();
+                handleNav('faqs');
+              }}
+            >
+              FAQs
             </a>
           </nav>
-
-          {/* 6. Refined Functional Search Field */}
-          <form className="navbar-search-form" onSubmit={handleNavSearchSubmit}>
-            <Search size={14} className="search-icon" />
-            <input 
-              ref={searchInputRef}
-              type="text" 
-              className="nav-search-input"
-              placeholder="Search software..."
-              value={navSearch}
-              onChange={(e) => setNavSearch(e.target.value)}
-              aria-label="Search software suites"
-            />
-            <kbd className="kbd-shortcut" title="Press Ctrl+K or ⌘K to focus search">⌘K</kbd>
-          </form>
 
           {/* 7-8. Right Action Utilities */}
           <div className="nav-actions">
             
-            {/* 7. Sign In / Account */}
+            {/* 7. Admin Login */}
             <button 
               type="button" 
               className="btn-text sign-in-btn"
-              onClick={() => setPortalModalOpen(true)}
-              aria-label="Sign in to client portal"
+              onClick={() => {
+                if (onOpenAdmin) {
+                  onOpenAdmin();
+                } else {
+                  window.location.hash = '#admin';
+                }
+              }}
+              title="Admin Console & Management Portal"
+              aria-label="Admin Login"
             >
               <User size={15} />
-              <span>Sign In</span>
+              <span>Admin Login</span>
             </button>
 
             {cartCount > 0 && (
@@ -300,18 +232,6 @@ export default function Header({
             </div>
 
             <div className="mobile-drawer-content">
-              
-              <div 
-                className="mobile-search-bar"
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  if (onSearchClick) onSearchClick();
-                }}
-              >
-                <Search size={15} />
-                <span>Search ERP, CRM, HRMS...</span>
-              </div>
-
               <div className="mobile-links-list">
                 <a 
                   href="#featured-software" 
@@ -338,6 +258,18 @@ export default function Header({
                 </a>
 
                 <a 
+                  href="#why-kiaan" 
+                  className="mobile-link"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNav('why-kiaan');
+                  }}
+                >
+                  <span>Why Kiaan</span>
+                  <ArrowRight size={14} />
+                </a>
+
+                <a 
                   href="#customization-services" 
                   className="mobile-link"
                   onClick={(e) => {
@@ -345,7 +277,19 @@ export default function Header({
                     handleNav('customization-services');
                   }}
                 >
-                  <span>Custom Development</span>
+                  <span>Customization Services</span>
+                  <ArrowRight size={14} />
+                </a>
+
+                <a 
+                  href="#faqs" 
+                  className="mobile-link"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNav('faqs');
+                  }}
+                >
+                  <span>FAQs</span>
                   <ArrowRight size={14} />
                 </a>
               </div>
@@ -361,8 +305,6 @@ export default function Header({
                       onClick={() => {
                         if (onCategorySelect) onCategorySelect(cat.id);
                         setMobileMenuOpen(false);
-                        const el = document.getElementById('featured-software');
-                        if (el) el.scrollIntoView({ behavior: 'smooth' });
                       }}
                     >
                       {getCategoryIcon(cat.icon)}
@@ -378,7 +320,7 @@ export default function Header({
                   className="btn btn-secondary w-full mb-2"
                   onClick={() => {
                     setMobileMenuOpen(false);
-                    setPortalModalOpen(true);
+                    if (onOpenPortal) onOpenPortal();
                   }}
                 >
                   <User size={15} />
@@ -400,12 +342,6 @@ export default function Header({
           </div>
         </div>
       )}
-
-      {/* Client License & Account Portal Modal */}
-      <ClientPortalModal 
-        isOpen={portalModalOpen}
-        onClose={() => setPortalModalOpen(false)}
-      />
     </>
   );
 }

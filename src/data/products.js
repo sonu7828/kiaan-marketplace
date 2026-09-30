@@ -75,10 +75,11 @@ export const PRODUCTS = [
     ],
     whoShouldUse: 'Mid-sized to large enterprises, distributors, and manufacturing businesses that need centralized financial control, automated purchasing, and transparent operational ledgers.',
     techStack: 'React frontend, Node.js (Express) backend, MySQL relational database. Compatible with Linux (Ubuntu/Debian), Docker, AWS, or GCP.',
-    // Commercial Details (Optional / On Request)
+    docUrl: 'https://docs.kiaantechnology.com/erp-enterprise',
+    // Commercial Details
     pricing: {
-      isApproved: false,
-      priceDisplay: 'Contact for Pricing',
+      isApproved: true,
+      priceDisplay: '₹49,999',
       pricingNote: 'Perpetual single-domain license with dedicated server deployment assistance.'
     },
     customizationAvailable: true,
@@ -123,9 +124,10 @@ export const PRODUCTS = [
     ],
     whoShouldUse: 'B2B sales teams, agencies, real estate firms, and service consultancies looking to organize client leads and prevent lost sales opportunities.',
     techStack: 'React, Node.js (Express), MySQL database, WebSocket for real-time lead updates.',
+    docUrl: 'https://docs.kiaantechnology.com/pulse-crm',
     pricing: {
-      isApproved: false,
-      priceDisplay: 'Contact for Pricing',
+      isApproved: true,
+      priceDisplay: '₹29,999',
       pricingNote: 'Perpetual license with full deployment support on your own server.'
     },
     customizationAvailable: true,
@@ -153,6 +155,10 @@ export const PRODUCTS = [
       { 
         url: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1000&auto=format&fit=crop&q=80', 
         caption: 'Employee Attendance & Shift Roster' 
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=1000&auto=format&fit=crop&q=80',
+        caption: 'Automated Payroll & Salary Slip Generator'
       }
     ],
     features: [
@@ -170,9 +176,10 @@ export const PRODUCTS = [
     ],
     whoShouldUse: 'Companies with 20 to 2,000+ employees seeking automated payroll calculation, biometric integration, and an employee self-service portal.',
     techStack: 'React, Node.js, MySQL. Compatible with standard Linux servers and cloud hosts.',
+    docUrl: 'https://docs.kiaantechnology.com/workforce-hrms',
     pricing: {
-      isApproved: false,
-      priceDisplay: 'Contact for Pricing',
+      isApproved: true,
+      priceDisplay: '₹34,999',
       pricingNote: 'Perpetual license. Includes payroll compliance updates.'
     },
     customizationAvailable: true,
@@ -200,6 +207,10 @@ export const PRODUCTS = [
       { 
         url: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1000&auto=format&fit=crop&q=80', 
         caption: 'Warehouse Stock Balancing & Bin Allocation' 
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1553413077-190dd305871c?w=1000&auto=format&fit=crop&q=80',
+        caption: 'Barcode Dispatch & Real-Time Tracking'
       }
     ],
     features: [
@@ -217,9 +228,10 @@ export const PRODUCTS = [
     ],
     whoShouldUse: 'Wholesalers, distributors, e-commerce fulfillment hubs, and retail chains managing inventory across multiple storage locations.',
     techStack: 'React, Node.js, MySQL, Redis for stock level caching.',
+    docUrl: 'https://docs.kiaantechnology.com/flow-inventory',
     pricing: {
-      isApproved: false,
-      priceDisplay: 'Contact for Pricing',
+      isApproved: true,
+      priceDisplay: '₹24,999',
       pricingNote: 'Perpetual license. Multi-branch deployment available.'
     },
     customizationAvailable: true,
@@ -247,6 +259,10 @@ export const PRODUCTS = [
       { 
         url: 'https://images.unsplash.com/photo-1556742049-0a67c5574f73?w=1000&auto=format&fit=crop&q=80', 
         caption: 'High-Speed Cashier Terminal' 
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=1000&auto=format&fit=crop&q=80',
+        caption: 'GST Thermal Receipt & Daily Register'
       }
     ],
     features: [
@@ -264,9 +280,10 @@ export const PRODUCTS = [
     ],
     whoShouldUse: 'Supermarkets, apparel stores, retail counters, and distributors requiring fast checkout, keyboard shortcuts, and offline reliability.',
     techStack: 'React + Local Storage / SQLite (Client) + Node.js / MySQL (Server Sync).',
+    docUrl: 'https://docs.kiaantechnology.com/swift-pos',
     pricing: {
-      isApproved: false,
-      priceDisplay: 'Contact for Pricing',
+      isApproved: true,
+      priceDisplay: '₹19,999',
       pricingNote: 'Perpetual license per location/domain.'
     },
     customizationAvailable: true,
@@ -294,6 +311,10 @@ export const PRODUCTS = [
       { 
         url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1000&auto=format&fit=crop&q=80', 
         caption: 'Invoice OCR Parser & Workflow Builder' 
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1000&auto=format&fit=crop&q=80',
+        caption: 'Universal Webhook & API Bridge'
       }
     ],
     features: [
@@ -310,9 +331,10 @@ export const PRODUCTS = [
     ],
     whoShouldUse: 'Businesses processing hundreds of monthly purchase bills, invoices, or customer support queries looking to automate data entry.',
     techStack: 'React, Node.js, Python OCR Service, MySQL.',
+    docUrl: 'https://docs.kiaantechnology.com/flow-ai',
     pricing: {
-      isApproved: false,
-      priceDisplay: 'Contact for Pricing',
+      isApproved: true,
+      priceDisplay: '₹39,999',
       pricingNote: 'Dedicated setup assistance and server deployment included.'
     },
     customizationAvailable: true,
