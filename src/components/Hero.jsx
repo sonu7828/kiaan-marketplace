@@ -1,33 +1,13 @@
 import React, { useState } from 'react';
 import { Search, ArrowRight } from 'lucide-react';
-import { CATEGORIES } from '../data/products';
 
-export default function Hero({ onSearchSubmit, selectedCategory = 'all', onCategorySelect }) {
+export default function Hero({ onSearchSubmit, selectedCategory = 'all' }) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeCat, setActiveCat] = useState(selectedCategory || 'all');
-
-  React.useEffect(() => {
-    if (selectedCategory) {
-      setActiveCat(selectedCategory);
-    }
-  }, [selectedCategory]);
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (onSearchSubmit) {
-      onSearchSubmit(searchQuery, activeCat);
-    }
-    const catSection = document.getElementById('featured-software');
-    if (catSection) catSection.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const handleCategoryClick = (catId) => {
-    setActiveCat(catId);
-    if (onCategorySelect) {
-      onCategorySelect(catId);
-    }
-    if (onSearchSubmit) {
-      onSearchSubmit(searchQuery, catId);
+      onSearchSubmit(searchQuery, selectedCategory || 'all');
     }
     const catSection = document.getElementById('featured-software');
     if (catSection) catSection.scrollIntoView({ behavior: 'smooth' });
@@ -72,31 +52,6 @@ export default function Hero({ onSearchSubmit, selectedCategory = 'all', onCateg
             </button>
           </div>
         </form>
-
-        {/* Horizontal Categories Bar in Strictly a Single Line */}
-        <div className="hero-categories-horizontal-bar" role="tablist" aria-label="Software Categories">
-          <button 
-            type="button" 
-            role="tab"
-            aria-selected={activeCat === 'all'}
-            className={`hero-cat-chip ${activeCat === 'all' ? 'active' : ''}`}
-            onClick={() => handleCategoryClick('all')}
-          >
-            All Software
-          </button>
-          {CATEGORIES.map(c => (
-            <button 
-              key={c.id} 
-              type="button" 
-              role="tab"
-              aria-selected={activeCat === c.id}
-              className={`hero-cat-chip ${activeCat === c.id ? 'active' : ''}`}
-              onClick={() => handleCategoryClick(c.id)}
-            >
-              {c.name}
-            </button>
-          ))}
-        </div>
 
       </div>
     </section>

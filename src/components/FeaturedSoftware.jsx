@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { 
   Play, 
   ArrowRight, 
-  Check, 
   SlidersHorizontal,
   Image as ImageIcon,
   FileText
@@ -154,7 +153,6 @@ export default function FeaturedSoftware({
         ) : (
           <div className="software-cards-grid">
             {filteredProducts.map((product) => {
-              const tags = (product.features || []).slice(0, 3);
               const priceText = product.pricing?.priceDisplay || '₹49,999';
 
               return (
@@ -165,7 +163,7 @@ export default function FeaturedSoftware({
                     className="card-screenshot-wrap"
                     onClick={() => onViewDetails && onViewDetails(product)}
                   >
-                    <ProductScreenshot product={product} height={175} />
+                    <ProductScreenshot product={product} height={140} />
                     <div className="card-top-badges">
                       <span className="card-cat-badge">{product.category}</span>
                       {product.isFlagship && (
@@ -177,37 +175,13 @@ export default function FeaturedSoftware({
                   {/* Card Main Info */}
                   <div className="card-info-pane">
                     
-                    <div className="flex items-start justify-between gap-2">
-                      <h3 
-                        className="card-name"
-                        onClick={() => onViewDetails && onViewDetails(product)}
-                        title="Click to view full specifications"
-                      >
-                        {product.name}
-                      </h3>
-                    </div>
-
-                    <p className="card-one-line-desc">
-                      {product.shortDesc}
-                    </p>
-
-                    {/* Key Features List (Max 3) */}
-                    <ul className="card-features-list">
-                      {tags.map((tag, idx) => (
-                        <li key={idx} className="card-feature-item">
-                          <Check size={12} className="check-icon" />
-                          <span>{tag}</span>
-                        </li>
-                      ))}
-                    </ul>
-
-                    {/* Verified Tech Stack */}
-                    {product.techStack && (
-                      <div className="card-tech-stack">
-                        <span className="tech-stack-label">STACK:</span>
-                        <span className="tech-stack-text">{product.techStack}</span>
-                      </div>
-                    )}
+                    <h3 
+                      className="card-name"
+                      onClick={() => onViewDetails && onViewDetails(product)}
+                      title="Click to view full specifications"
+                    >
+                      {product.name}
+                    </h3>
 
                     {/* Price Section */}
                     <div className="card-price-container">
@@ -225,8 +199,8 @@ export default function FeaturedSoftware({
                         onClick={() => handleLiveDemoClick(product)}
                         title={`Test live interactive demo for ${product.name}`}
                       >
-                        <Play size={13} />
-                        <span>View Live Demo</span>
+                        <Play size={12} />
+                        <span>Live Demo</span>
                       </button>
 
                       <button 
@@ -235,8 +209,8 @@ export default function FeaturedSoftware({
                         onClick={() => setScreenshotModalProduct(product)}
                         title={`View high-resolution screenshots for ${product.name}`}
                       >
-                        <ImageIcon size={13} />
-                        <span>View Screenshot</span>
+                        <ImageIcon size={12} />
+                        <span>Screenshots</span>
                       </button>
 
                       <button 
@@ -245,8 +219,8 @@ export default function FeaturedSoftware({
                         onClick={() => setDocModalProduct(product)}
                         title={`View technical architecture and deployment documentation for ${product.name}`}
                       >
-                        <FileText size={13} />
-                        <span>View Document</span>
+                        <FileText size={12} />
+                        <span>Document</span>
                       </button>
                     </div>
 
