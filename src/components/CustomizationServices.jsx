@@ -6,7 +6,7 @@ import {
   ArrowRight, 
   GitBranch 
 } from 'lucide-react';
-import { CUSTOMIZATION_SERVICES } from '../data/marketplaceData';
+import { CUSTOMIZATION_SERVICES } from '../data/products';
 
 export default function CustomizationServices({ onRequestQuote }) {
   return (

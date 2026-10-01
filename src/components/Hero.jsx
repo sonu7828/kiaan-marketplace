@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Search, ArrowRight } from 'lucide-react';
+import { productService } from '../services/productService';
 
 export default function Hero({ onSearchSubmit, selectedCategory = 'all' }) {
   const [searchQuery, setSearchQuery] = useState('');
+  const heroConfig = productService.getHeroConfig();
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -19,8 +21,8 @@ export default function Hero({ onSearchSubmit, selectedCategory = 'all' }) {
         
         {/* Single Punchy Headline with Colorful Lighting Gradient */}
         <h1 className="hero-streamlined-title">
-          <span>Production-Ready Business Software, </span>
-          <span className="hero-highlight-gradient">Built to Deploy & Scale</span>
+          <span>{heroConfig.titlePrefix || 'Production-Ready Business Software, '}</span>
+          <span className="hero-highlight-gradient">{heroConfig.titleHighlight || 'Built to Deploy & Scale'}</span>
         </h1>
 
         {/* Centered Search Bar with Backlit Glow Effects */}
@@ -30,7 +32,7 @@ export default function Hero({ onSearchSubmit, selectedCategory = 'all' }) {
             <Search size={18} className="hero-search-icon" />
             <input 
               type="text" 
-              placeholder="Search software (e.g. ERP, CRM, Payroll, Invoicing, Inventory)..."
+              placeholder={heroConfig.searchPlaceholder || "Search software (e.g. ERP, CRM, Payroll, Invoicing, Inventory)..."}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="hero-streamlined-input"

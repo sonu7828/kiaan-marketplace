@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { X, Lock, KeyRound, ArrowRight, ShieldCheck, CheckCircle2, User, Building, ExternalLink } from 'lucide-react';
+import { productService } from '../services/productService';
 
 export default function ClientPortalModal({ isOpen, onClose }) {
   const [activeTab, setActiveTab] = useState('license'); // 'license' | 'login'
@@ -19,16 +20,24 @@ export default function ClientPortalModal({ isOpen, onClose }) {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      setLookupResult({
-        status: 'Active',
-        product: 'KiaanERP Enterprise',
-        licenseType: 'Single Domain Perpetual',
-        issuedDomain: domain || 'demo.enterprise.com',
-        keyMasked: (licenseKey || 'KT-ERP-9821-X99').toUpperCase(),
-        updatesValidUntil: 'March 2027',
-        supportTier: 'Priority Business'
-      });
-    }, 600);
+      const res = productService.verifyLicense(licenseKey, domain);
+      if (res.success && res.license) {
+        setLookupResult({
+          status: res.license.status || 'Active',
+          product: res.license.product || 'Kiaan Verified Suite',
+          licenseType: res.license.licenseType || 'Single Domain Perpetual',
+          issuedDomain: res.license.domain || domain || 'client.enterprise.com',
+          keyMasked: res.license.key ? res.license.key.toUpperCase() : (licenseKey || 'KT-ERP-9821-X99').toUpperCase(),
+          updatesValidUntil: res.license.validUntil || 'March 2027',
+          supportTier: res.license.supportTier || 'Priority Business'
+        });
+      } else {
+        setLookupResult({
+          error: true,
+          message: res.message || 'No matching active license record found.'
+        });
+      }
+    }, 400);
   };
 
   const handleSignIn = (e) => {
@@ -128,7 +137,11 @@ export default function ClientPortalModal({ isOpen, onClose }) {
                 </button>
               </form>
 
-              {lookupResult && (
+              {lookupResult && lookupResult.error ? (
+                <div className="license-verification-card mt-3" style={{ borderLeft: '3px solid #EF4444' }}>
+                  <p className="text-sm text-red-400">{lookupResult.message}</p>
+                </div>
+              ) : lookupResult ? (
                 <div className="license-verification-card">
                   <div className="license-card-header">
                     <div className="flex items-center gap-2">
@@ -161,7 +174,7 @@ export default function ClientPortalModal({ isOpen, onClose }) {
                     <span className="text-xs text-muted">Cryptographic signature valid on Kiaan sovereign node.</span>
                   </div>
                 </div>
-              )}
+              ) : null}
             </div>
           ) : (
             <div className="portal-tab-content">

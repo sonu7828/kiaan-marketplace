@@ -6,16 +6,17 @@ import {
   Activity, 
   Building2, 
   Cpu, 
-  ArrowRight,
-  Package,
-  Clock
+  ArrowRight, 
+  Package, 
+  Clock 
 } from 'lucide-react';
-import { INDUSTRY_SOLUTIONS } from '../data/marketplaceData';
+import { productService } from '../services/productService';
 
 export default function IndustrySolutions({ onExploreSolutions }) {
-  const [activeIndustryId, setActiveIndustryId] = useState(INDUSTRY_SOLUTIONS[0].id);
+  const industries = productService.getIndustries();
+  const [activeIndustryId, setActiveIndustryId] = useState(industries[0]?.id || 'manufacturing');
 
-  const activeIndustry = INDUSTRY_SOLUTIONS.find(i => i.id === activeIndustryId) || INDUSTRY_SOLUTIONS[0];
+  const activeIndustry = industries.find(i => i.id === activeIndustryId) || industries[0] || {};
 
   const getIndustryIcon = (id) => {
     switch (id) {
@@ -44,7 +45,7 @@ export default function IndustrySolutions({ onExploreSolutions }) {
           
           {/* Left: Industry Selector List */}
           <div className="industry-menu-pane">
-            {INDUSTRY_SOLUTIONS.map((ind) => {
+            {industries.map((ind) => {
               const isActive = ind.id === activeIndustryId;
 
               return (
@@ -54,7 +55,7 @@ export default function IndustrySolutions({ onExploreSolutions }) {
                   onClick={() => setActiveIndustryId(ind.id)}
                 >
                   <div className="ind-icon">{getIndustryIcon(ind.id)}</div>
-                  <span className="ind-name">{ind.title}</span>
+                  <span className="ind-name">{ind.title || ind.name}</span>
                 </button>
               );
             })}

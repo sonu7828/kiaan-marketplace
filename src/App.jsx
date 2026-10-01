@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
-import CategoryNav from './components/CategoryNav';
 import FeaturedSoftware from './components/FeaturedSoftware';
 import IndustrySolutions from './components/IndustrySolutions';
 import WhyKiaan from './components/WhyKiaan';
@@ -30,6 +29,9 @@ export default function App() {
 
   // Dynamic Product Store State
   const [products, setProducts] = useState(() => productService.getAllProducts());
+
+  // Derived Active Product for Detail View
+  const activeProduct = products.find(p => p.slug === activeProductSlug || p.id === activeProductSlug) || products[0] || null;
 
   // Filter & Search State
   const [searchQuery, setSearchQuery] = useState('');
@@ -265,7 +267,7 @@ export default function App() {
           <div className="admin-login-header">
             <span className="admin-k-badge">KIAAN TECH</span>
             <h2 className="admin-login-title">Admin Console Access</h2>
-            <p className="admin-login-subtitle">Private administrative controls for marketplace catalog, orders, and licensing.</p>
+            <p className="admin-login-subtitle">Private administrative controls for marketplace software catalog, categories, inquiries, and licensing.</p>
           </div>
 
           <form onSubmit={handleAdminLoginSubmit} className="admin-login-form">

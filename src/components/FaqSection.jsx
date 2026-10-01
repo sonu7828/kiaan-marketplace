@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronDown, HelpCircle, MessageSquare } from 'lucide-react';
-import { FAQS } from '../data/marketplaceData';
+import { FAQS } from '../data/products';
 
 export default function FaqSection({ onOpenContact }) {
   const [openIndex, setOpenIndex] = useState(0);
