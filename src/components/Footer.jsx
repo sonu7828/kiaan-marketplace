@@ -64,6 +64,7 @@ export default function Footer({ onCategorySelect, onExploreClick, onNavigateSec
               <li><a href="#featured-software" onClick={(e) => { e.preventDefault(); if (onCategorySelect) onCategorySelect('hrms'); }}>Workforce HRMS</a></li>
               <li><a href="#featured-software" onClick={(e) => { e.preventDefault(); if (onCategorySelect) onCategorySelect('inventory'); }}>Supply Chain & WMS</a></li>
               <li><a href="#featured-software" onClick={(e) => { e.preventDefault(); if (onCategorySelect) onCategorySelect('pos'); }}>Swift POS & Billing</a></li>
+              <li><a href="#featured-software" onClick={(e) => { e.preventDefault(); if (onCategorySelect) onCategorySelect('automation'); }}>AI & Automation Engine</a></li>
             </ul>
           </div>
 

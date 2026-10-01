@@ -8,12 +8,14 @@ import {
   Cpu, 
   ArrowRight, 
   Package, 
-  Clock 
+  Clock,
+  CheckCircle2
 } from 'lucide-react';
 import { productService } from '../services/productService';
 
-export default function IndustrySolutions({ onExploreSolutions }) {
+export default function IndustrySolutions({ onExploreSolutions, onViewProduct, onSelectCategory }) {
   const industries = productService.getIndustries();
+  const allProducts = productService.getAllProducts();
   const [activeIndustryId, setActiveIndustryId] = useState(industries[0]?.id || 'manufacturing');
 
   const activeIndustry = industries.find(i => i.id === activeIndustryId) || industries[0] || {};
@@ -76,15 +78,47 @@ export default function IndustrySolutions({ onExploreSolutions }) {
 
             <p className="ind-desc">{activeIndustry.description}</p>
 
+            {/* Industry Capabilities Highlights */}
+            {activeIndustry.highlights && activeIndustry.highlights.length > 0 && (
+              <div className="ind-highlights-box" style={{ margin: '14px 0', padding: '12px 14px', background: 'var(--bg-soft)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }}>
+                <span className="ind-box-label" style={{ marginBottom: '6px' }}>INDUSTRY CAPABILITIES & WORKFLOWS:</span>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '6px' }}>
+                  {activeIndustry.highlights.map((h, idx) => (
+                    <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                      <CheckCircle2 size={13} className="text-orange" style={{ flexShrink: 0 }} />
+                      <span>{h}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="ind-recommended-box">
               <span className="ind-box-label">RECOMMENDED SOFTWARE PACKAGES:</span>
               <div className="ind-packages-list">
-                {activeIndustry.recommendedPackages.map((pkg, idx) => (
-                  <div key={idx} className="ind-pkg-tag">
-                    <Package size={13} className="text-orange" />
-                    <span>{pkg}</span>
-                  </div>
-                ))}
+                {activeIndustry.recommendedPackages && activeIndustry.recommendedPackages.map((pkgName, idx) => {
+                  const matched = allProducts.find(p => p.name.toLowerCase().includes(pkgName.toLowerCase()) || pkgName.toLowerCase().includes(p.name.toLowerCase()));
+                  return (
+                    <button
+                      key={idx}
+                      type="button"
+                      className="ind-pkg-tag"
+                      style={{ cursor: matched ? 'pointer' : 'default', transition: 'all 0.15s ease' }}
+                      onClick={() => {
+                        if (matched && onViewProduct) {
+                          onViewProduct(matched);
+                        } else if (onExploreSolutions) {
+                          onExploreSolutions();
+                        }
+                      }}
+                      title={matched ? `Click to view full specifications for ${matched.name}` : pkgName}
+                    >
+                      <Package size={13} className="text-orange" />
+                      <span>{pkgName}</span>
+                      {matched && <ArrowRight size={11} style={{ opacity: 0.6 }} />}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
@@ -92,9 +126,19 @@ export default function IndustrySolutions({ onExploreSolutions }) {
               <button 
                 type="button" 
                 className="btn btn-primary btn-sm"
-                onClick={onExploreSolutions}
+                onClick={() => {
+                  if (onSelectCategory && activeIndustry.id === 'retail') {
+                    onSelectCategory('pos');
+                  } else if (onSelectCategory && (activeIndustry.id === 'manufacturing' || activeIndustry.id === 'logistics')) {
+                    onSelectCategory('erp');
+                  } else if (onSelectCategory && activeIndustry.id === 'tech') {
+                    onSelectCategory('hrms');
+                  } else if (onExploreSolutions) {
+                    onExploreSolutions();
+                  }
+                }}
               >
-                <span>Explore Packages</span>
+                <span>Explore {activeIndustry.name || 'Industry'} Software</span>
                 <ArrowRight size={13} />
               </button>
             </div>

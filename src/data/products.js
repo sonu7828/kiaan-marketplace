@@ -880,13 +880,13 @@ export const PRODUCTS = [
 ];
 
 export const CATEGORIES = [
-  { id: 'erp', name: 'ERP Systems', fullName: 'Enterprise Resource Planning', shortDesc: 'Complete business management for finance, operations, and purchasing.' },
-  { id: 'crm', name: 'CRM Systems', fullName: 'Customer Relationship Management', shortDesc: 'Track leads, organize customer deals, and automate sales reminders.' },
-  { id: 'hrms', name: 'HRMS & Payroll', fullName: 'Human Resource Management', shortDesc: 'Employee attendance, leave records, and automated statutory payroll.' },
-  { id: 'inventory', name: 'Inventory & WMS', fullName: 'Supply Chain & Inventory', shortDesc: 'Multi-warehouse stock balancing, barcode dispatch, and expiry alerts.' },
-  { id: 'pos', name: 'Billing & POS', fullName: 'Billing, POS & Invoicing', shortDesc: 'Fast counter billing with offline resilience and thermal receipt printing.' },
-  { id: 'industry', name: 'Industry Solutions', fullName: 'Specialized Industry Solutions', shortDesc: 'Tailored software for manufacturing, retail, logistics, healthcare, and services.' },
-  { id: 'automation', name: 'AI & Automation', fullName: 'AI & Business Automation', shortDesc: 'Automated invoice data extraction and cross-system workflow triggers.' }
+  { id: 'erp', name: 'ERP Systems', shortName: 'ERP', icon: 'Layers', fullName: 'Enterprise Resource Planning', shortDesc: 'Complete business management for finance, operations, and purchasing.' },
+  { id: 'crm', name: 'CRM Systems', shortName: 'CRM', icon: 'Users', fullName: 'Customer Relationship Management', shortDesc: 'Track leads, organize customer deals, and automate sales reminders.' },
+  { id: 'hrms', name: 'HRMS & Payroll', shortName: 'HRMS', icon: 'Briefcase', fullName: 'Human Resource Management', shortDesc: 'Employee attendance, leave records, and automated statutory payroll.' },
+  { id: 'inventory', name: 'Inventory & WMS', shortName: 'Inventory', icon: 'Package', fullName: 'Supply Chain & Inventory', shortDesc: 'Multi-warehouse stock balancing, barcode dispatch, and expiry alerts.' },
+  { id: 'pos', name: 'Billing & POS', shortName: 'POS & Billing', icon: 'CreditCard', fullName: 'Billing, POS & Invoicing', shortDesc: 'Fast counter billing with offline resilience and thermal receipt printing.' },
+  { id: 'industry', name: 'Industry Solutions', shortName: 'Industry', icon: 'Building2', fullName: 'Specialized Industry Solutions', shortDesc: 'Tailored software for manufacturing, retail, logistics, healthcare, and services.' },
+  { id: 'automation', name: 'AI & Automation', shortName: 'AI & Automate', icon: 'Cpu', fullName: 'AI & Business Automation', shortDesc: 'Automated invoice data extraction and cross-system workflow triggers.' }
 ];
 
 export const INDUSTRIES = [
@@ -1047,6 +1047,14 @@ export const FAQS = [
   {
     q: 'Can Kiaan Technology customize features specifically for our business workflows?',
     a: 'Yes. Kiaan Technology provides direct bespoke engineering services. Because our in-house engineering team authored the complete platform architecture, we can adapt, extend, or build custom modules tailored exactly to your unique operational requirements.'
+  },
+  {
+    q: 'Are there any recurring monthly subscription fees or per-user seat limits?',
+    a: 'No. Unlike SaaS platforms that charge monthly per-user fees, all Kiaan Marketplace software is sold under a one-time perpetual license. You get unlimited internal users, administrative seats, and operational transactions with zero recurring subscription pressure.'
+  },
+  {
+    q: 'How can we evaluate software and test features before purchasing?',
+    a: 'Every software product in our catalog features an interactive live demo sandbox. You can log in using pre-configured Super Admin, Staff, or Customer accounts to test real workflows, inspect technical architecture documents, and browse full screenshot galleries directly from the marketplace.'
   }
 ];
 

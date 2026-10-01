@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Search, ArrowRight } from 'lucide-react';
 import { productService } from '../services/productService';
+import { CATEGORIES } from '../data/products';
 
-export default function Hero({ onSearchSubmit, selectedCategory = 'all' }) {
+export default function Hero({ onSearchSubmit, selectedCategory = 'all', onCategorySelect }) {
   const [searchQuery, setSearchQuery] = useState('');
   const heroConfig = productService.getHeroConfig();
 
@@ -10,6 +11,14 @@ export default function Hero({ onSearchSubmit, selectedCategory = 'all' }) {
     e.preventDefault();
     if (onSearchSubmit) {
       onSearchSubmit(searchQuery, selectedCategory || 'all');
+    }
+    const catSection = document.getElementById('featured-software');
+    if (catSection) catSection.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleCategoryClick = (catId) => {
+    if (onCategorySelect) {
+      onCategorySelect(catId);
     }
     const catSection = document.getElementById('featured-software');
     if (catSection) catSection.scrollIntoView({ behavior: 'smooth' });
@@ -54,6 +63,30 @@ export default function Hero({ onSearchSubmit, selectedCategory = 'all' }) {
             </button>
           </div>
         </form>
+
+        {/* Functional Category Shortcuts */}
+        <div className="hero-trending-tags">
+          <span className="trending-label">QUICK CATEGORIES:</span>
+          <div className="trending-chips">
+            <button
+              type="button"
+              className={`trending-chip ${selectedCategory === 'all' ? 'active' : ''}`}
+              onClick={() => handleCategoryClick('all')}
+            >
+              All Software
+            </button>
+            {CATEGORIES.map(cat => (
+              <button
+                key={cat.id}
+                type="button"
+                className={`trending-chip ${selectedCategory === cat.id ? 'active' : ''}`}
+                onClick={() => handleCategoryClick(cat.id)}
+              >
+                {cat.shortName || cat.name}
+              </button>
+            ))}
+          </div>
+        </div>
 
       </div>
     </section>

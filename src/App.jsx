@@ -379,6 +379,8 @@ export default function App() {
           {/* STEP 5: Browse by Industry */}
           <IndustrySolutions 
             onExploreSolutions={handleExploreClick}
+            onViewProduct={handleViewProduct}
+            onSelectCategory={handleCategorySelect}
           />
 
           {/* STEP 6: Why Choose Kiaan Technology */}

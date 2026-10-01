@@ -13,25 +13,25 @@ export default function HowItWorks() {
       num: '01',
       icon: <Compass size={20} />,
       title: 'Explore & Test Live Demos',
-      desc: 'Launch interactive sandboxes directly from your browser. Inspect module interfaces, schemas, and reports before any commercial decision.'
+      desc: 'Launch interactive sandboxes from your browser with pre-configured Admin and Staff logins. Inspect live UI modules, reports, and technical docs before buying.'
     },
     {
       num: '02',
       icon: <KeyRound size={20} />,
-      title: 'Choose Your License',
-      desc: 'Select a Single-Domain Production License or Full Source Tier. Get transparent pricing with zero recurring monthly subscription fees.'
+      title: 'Select One-Time License',
+      desc: 'Choose transparent one-time perpetual licensing with complete source code options. Deploy with zero monthly subscriptions or per-seat user fees.'
     },
     {
       num: '03',
       icon: <DownloadCloud size={20} />,
-      title: 'Deploy to Your Server',
-      desc: 'Receive verified deployment packages or Git repository access. Install on your local hardware, Docker, AWS, or any Linux server.'
+      title: 'Self-Host on Your Server',
+      desc: 'Download verified release bundles with Docker Compose clusters and SQL schemas. Install on your private Linux VM or cloud server with complete data sovereignty.'
     },
     {
       num: '04',
       icon: <Wrench size={20} />,
-      title: 'Customize & Scale',
-      desc: 'Use the software as delivered or request custom feature development directly from our in-house engineering team.'
+      title: 'Customize & Expand',
+      desc: 'Deploy out of the box or commission Kiaan Technology in-house engineers for bespoke module extensions, third-party API adapters, and white-labeling.'
     }
   ];
 

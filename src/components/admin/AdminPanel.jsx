@@ -564,31 +564,12 @@ export default function AdminPanel({
               <span>Production Console</span>
             </div>
 
-            {activeModule === 'form' ? (
-              <div className="form-head-actions">
-                <button className="btn btn-secondary btn-sm" onClick={() => setActiveModule('catalog')}>
-                  Cancel
-                </button>
-                <button className="btn btn-secondary btn-sm" onClick={() => handleSaveForm('draft')}>
-                  Save Draft
-                </button>
-                <button className="btn btn-primary btn-sm" onClick={() => handleSaveForm('published')}>
-                  <Save size={14} />
-                  <span>{formData.status === 'published' ? 'Update Software' : 'Publish Software'}</span>
-                </button>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <button className="btn btn-secondary btn-sm" onClick={onBackToMarketplace}>
-                  <ExternalLink size={14} />
-                  <span>View Public Store</span>
-                </button>
-                <button className="btn btn-primary btn-sm" onClick={handleAddNewProduct}>
-                  <Plus size={15} />
-                  <span>Add Software</span>
-                </button>
-              </div>
-            )}
+            <div className="flex items-center gap-2">
+              <button className="btn btn-secondary btn-sm" onClick={onBackToMarketplace}>
+                <ExternalLink size={14} />
+                <span>View Public Store</span>
+              </button>
+            </div>
           </div>
         </div>
       </header>

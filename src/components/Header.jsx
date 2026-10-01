@@ -10,7 +10,9 @@ import {
   Briefcase,
   Package,
   CreditCard,
-  Cpu
+  Cpu,
+  KeyRound,
+  Building2
 } from 'lucide-react';
 import { CATEGORIES } from '../data/products';
 
@@ -55,6 +57,7 @@ export default function Header({
       case 'Package': return <Package size={16} />;
       case 'CreditCard': return <CreditCard size={16} />;
       case 'Cpu': return <Cpu size={16} />;
+      case 'Building2': return <Building2 size={16} />;
       default: return <Layers size={16} />;
     }
   };
@@ -159,7 +162,23 @@ export default function Header({
           {/* 7-8. Right Action Utilities */}
           <div className="nav-actions">
             
-            {/* 7. Admin Login */}
+            {/* Customer Portal */}
+            <button 
+              type="button" 
+              className="btn-text sign-in-btn"
+              onClick={() => {
+                if (onOpenPortal) {
+                  onOpenPortal();
+                }
+              }}
+              title="Customer License & Account Portal"
+              aria-label="Customer Portal"
+            >
+              <KeyRound size={15} />
+              <span>Customer Portal</span>
+            </button>
+
+            {/* Admin Login */}
             <button 
               type="button" 
               className="btn-text sign-in-btn"

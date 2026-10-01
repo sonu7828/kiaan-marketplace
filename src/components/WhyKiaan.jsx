@@ -13,22 +13,22 @@ export default function WhyKiaan() {
     {
       icon: <Server size={22} />,
       title: 'Host on Your Own Server',
-      desc: 'Deploy on your private Linux, Docker, or Cloud server. Your database and business records remain 100% under your control.'
+      desc: 'Deploy on your private Linux VM, Docker cluster, AWS, or local bare-metal server. Maintain 100% data sovereignty with zero vendor telemetry or third-party tracking.'
     },
     {
       icon: <Code2 size={22} />,
       title: 'Full Source Code Included',
-      desc: 'Receive complete, unencrypted source code. Modify modules, add custom workflows, and eliminate recurring user licenses.'
+      desc: 'Receive complete, unencrypted, production-grade source code. Modify modules, extend database schemas, and eliminate recurring per-seat user license fees.'
     },
     {
       icon: <Wrench size={22} />,
       title: 'Custom Engineering Support',
-      desc: 'Because we engineered each solution, our team can tailor workflows, schemas, and integrations to match your exact business requirements.'
+      desc: 'Direct consultation from the engineers who authored the software. We provide bespoke feature adaptations, ERP/CRM workflow tuning, and SLA retainers.'
     },
     {
       icon: <ShieldCheck size={22} />,
       title: 'One-Time Perpetual License',
-      desc: 'Pay once for a lifetime commercial license with 12 months of software updates and zero recurring subscription pressure.'
+      desc: 'Pay once for lifetime commercial usage rights. Includes 12 months of version releases and security patches with zero monthly subscription overhead.'
     }
   ];
 

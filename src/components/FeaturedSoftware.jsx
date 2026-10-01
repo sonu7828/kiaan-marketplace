@@ -183,6 +183,13 @@ export default function FeaturedSoftware({
                       {product.name}
                     </h3>
 
+                    {/* Short Description */}
+                    {product.shortDesc && (
+                      <p className="card-short-desc" title={product.shortDesc}>
+                        {product.shortDesc}
+                      </p>
+                    )}
+
                     {/* Price Section */}
                     <div className="card-price-container">
                       <div className="price-tag-wrap">
@@ -243,6 +250,28 @@ export default function FeaturedSoftware({
             })}
           </div>
         )}
+
+        {/* Bottom Catalog Action Bar */}
+        <div className="catalog-bottom-bar" style={{ marginTop: '28px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          {(activeFilterTab !== 'all' || (searchQuery && searchQuery.trim())) ? (
+            <button 
+              type="button" 
+              className="btn btn-secondary btn-md"
+              onClick={() => {
+                setActiveFilterTab('all');
+                if (onSelectCategory) onSelectCategory('all');
+              }}
+            >
+              <span>View All Software ({sourceProducts.length} Suites)</span>
+              <ArrowRight size={14} />
+            </button>
+          ) : (
+            <div className="catalog-count-note" style={{ fontSize: '13px', color: 'var(--text-secondary)', display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', background: 'var(--bg-soft)', borderRadius: 'var(--radius-pill)', border: '1px solid var(--border)' }}>
+              <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#10B981', display: 'inline-block' }} />
+              <span>Showing all {sourceProducts.length} production-ready enterprise software suites</span>
+            </div>
+          )}
+        </div>
 
       </div>
 
