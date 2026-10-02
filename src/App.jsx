@@ -363,7 +363,6 @@ export default function App() {
           <Hero 
             onSearchSubmit={handleHeroSearchSubmit}
             selectedCategory={selectedCategory}
-            onCategorySelect={handleCategorySelect}
           />
 
           {/* STEP 2: Production-Ready Software Catalog */}
@@ -407,6 +406,10 @@ export default function App() {
         onExploreClick={handleExploreClick}
         onNavigateSection={handleNavigateSection}
         onOpenPortal={() => setPortalModalOpen(true)}
+        onOpenAdmin={() => {
+          window.location.hash = '#admin';
+          setCurrentView('admin');
+        }}
       />
 
       {/* CUSTOM QUOTE / CUSTOMIZATION INQUIRY MODAL */}

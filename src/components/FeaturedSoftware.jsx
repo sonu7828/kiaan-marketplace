@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { 
   Play, 
   ArrowRight, 
-  SlidersHorizontal,
   Image as ImageIcon,
   FileText
 } from 'lucide-react';
@@ -77,23 +76,12 @@ export default function FeaturedSoftware({
         
         {/* Section Header */}
         <div className="catalog-header-bar">
-          <div>
-            <h2 className="catalog-title">Explore Production Software</h2>
-            <p className="catalog-subtitle">Production-ready, self-hosted enterprise solutions built by Kiaan Technology.</p>
-          </div>
-
-          {/* Sort Selector */}
-          <div className="catalog-sort-wrapper">
-            <SlidersHorizontal size={14} className="sort-icon" />
-            <select 
-              className="sort-dropdown"
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              aria-label="Sort software"
-            >
-              <option value="featured">Featured Suites</option>
-              <option value="name-asc">Alphabetical (A-Z)</option>
-            </select>
+          <div className="catalog-title-group">
+            <div className="catalog-eyebrow-badge">
+              <span className="badge-pulse-glow" aria-hidden="true" />
+              <span>PRODUCTION-READY SYSTEMS</span>
+            </div>
+            <h2 className="catalog-title">Enterprise Software Ecosystem</h2>
           </div>
         </div>
 
@@ -163,13 +151,10 @@ export default function FeaturedSoftware({
                     className="card-screenshot-wrap"
                     onClick={() => onViewDetails && onViewDetails(product)}
                   >
-                    <ProductScreenshot product={product} height={140} />
-                    <div className="card-top-badges">
-                      <span className="card-cat-badge">{product.category}</span>
-                      {product.isFlagship && (
-                        <span className="badge badge-gold">Flagship</span>
-                      )}
-                    </div>
+                    <ProductScreenshot product={product} height={96} />
+                    {product.isFlagship && (
+                      <span className="card-flagship-pill">★ Flagship</span>
+                    )}
                   </div>
 
                   {/* Card Main Info */}
@@ -178,7 +163,7 @@ export default function FeaturedSoftware({
                     <h3 
                       className="card-name"
                       onClick={() => onViewDetails && onViewDetails(product)}
-                      title="Click to view full specifications"
+                      title={product.name}
                     >
                       {product.name}
                     </h3>
@@ -206,7 +191,7 @@ export default function FeaturedSoftware({
                         onClick={() => handleLiveDemoClick(product)}
                         title={`Test live interactive demo for ${product.name}`}
                       >
-                        <Play size={12} />
+                        <Play size={11} />
                         <span>Live Demo</span>
                       </button>
 
@@ -216,7 +201,7 @@ export default function FeaturedSoftware({
                         onClick={() => setScreenshotModalProduct(product)}
                         title={`View high-resolution screenshots for ${product.name}`}
                       >
-                        <ImageIcon size={12} />
+                        <ImageIcon size={11} />
                         <span>Screenshots</span>
                       </button>
 
@@ -226,7 +211,7 @@ export default function FeaturedSoftware({
                         onClick={() => setDocModalProduct(product)}
                         title={`View technical architecture and deployment documentation for ${product.name}`}
                       >
-                        <FileText size={12} />
+                        <FileText size={11} />
                         <span>Document</span>
                       </button>
                     </div>
@@ -239,7 +224,7 @@ export default function FeaturedSoftware({
                         onClick={() => onViewDetails && onViewDetails(product)}
                       >
                         <span>Full Product Details</span>
-                        <ArrowRight size={13} />
+                        <ArrowRight size={12} />
                       </button>
                     </div>
 
