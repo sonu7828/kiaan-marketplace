@@ -16,13 +16,17 @@ import ProductDetailPage from './components/ProductDetailPage';
 // Admin Panel (Private Isolated Console)
 import AdminPanel from './components/admin/AdminPanel';
 
+// Shopping Cart Components
+import AddedToCartModal from './components/cart/AddedToCartModal';
+import ShoppingCartPage from './components/cart/ShoppingCartPage';
+
 // Modals
 import CustomQuoteModal from './components/CustomQuoteModal';
 import ClientPortalModal from './components/ClientPortalModal';
 import { ShieldCheck, Info, Lock } from 'lucide-react';
 
 export default function App() {
-  // Navigation & View State: 'home' | 'product-detail' | 'admin'
+  // Navigation & View State: 'home' | 'product-detail' | 'cart' | 'admin'
   const [currentView, setCurrentView] = useState('home');
   const [activeProductSlug, setActiveProductSlug] = useState(null);
   const [pendingScrollSection, setPendingScrollSection] = useState(null);
@@ -36,7 +40,32 @@ export default function App() {
   // Filter & Search State
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [cartCount, setCartCount] = useState(0);
+
+  // Shopping Cart Persistent State
+  const [cartItems, setCartItems] = useState(() => {
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        const saved = localStorage.getItem('kiaan_marketplace_cart');
+        return saved ? JSON.parse(saved) : [];
+      }
+    } catch {}
+    return [];
+  });
+
+  // Modal that triggers immediately when "Add to Cart" is clicked (Screenshot 2)
+  const [addedCartModalProduct, setAddedCartModalProduct] = useState(null);
+
+  // Save Cart to LocalStorage
+  useEffect(() => {
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        localStorage.setItem('kiaan_marketplace_cart', JSON.stringify(cartItems));
+      }
+    } catch {}
+  }, [cartItems]);
+
+  // Dynamic Total Cart Count Badge
+  const totalCartCount = cartItems.reduce((acc, item) => acc + (item.quantity || 1), 0);
   
   // Custom Quote & Inquiry Modal
   const [quoteServiceTitle, setQuoteServiceTitle] = useState(null);
@@ -65,6 +94,9 @@ export default function App() {
         const slug = hash.replace('#product/', '');
         setActiveProductSlug(slug);
         setCurrentView('product-detail');
+        window.scrollTo(0, 0);
+      } else if (hash === '#cart') {
+        setCurrentView('cart');
         window.scrollTo(0, 0);
       } else if (hash === '#admin') {
         setCurrentView('admin');
@@ -127,7 +159,7 @@ export default function App() {
     setCurrentView('home');
   };
 
-  // Cross-view section scroll coordinator: waits for homepage DOM to mount before scrolling
+  // Cross-view section scroll coordinator
   useEffect(() => {
     if (currentView === 'home' && pendingScrollSection) {
       const timer = setTimeout(() => {
@@ -225,6 +257,88 @@ export default function App() {
     if (product.demoUrl && product.demoUrl.startsWith('http')) {
       window.open(product.demoUrl, '_blank', 'noopener,noreferrer');
     }
+  };
+
+  // -------------------------------------------------------------
+  // CART ACTIONS & FLOW
+  // -------------------------------------------------------------
+  const handleAddToCart = (product, options = {}) => {
+    const licenseType = options.licenseType || 'regular';
+    const qty = options.quantity || 1;
+    const rawRegular = product.pricingTiers?.regular || product.pricing?.priceDisplay || '₹24,999';
+    const rawExtended = product.pricingTiers?.extended || '₹59,999';
+    const priceDisplay = licenseType === 'regular' ? rawRegular : rawExtended;
+
+    setCartItems(prev => {
+      const idx = prev.findIndex(item => item.id === product.id && item.licenseType === licenseType);
+      if (idx >= 0) {
+        const next = [...prev];
+        next[idx] = {
+          ...next[idx],
+          quantity: (next[idx].quantity || 1) + qty
+        };
+        return next;
+      }
+      return [...prev, {
+        id: product.id,
+        productId: product.id,
+        name: product.name,
+        slug: product.slug,
+        category: product.category,
+        categoryId: product.categoryId,
+        coverImage: product.coverImage,
+        priceDisplay,
+        licenseType,
+        quantity: qty,
+        extendedSupport: false,
+        extendedSupportPrice: '₹4,999',
+        pricingTiers: product.pricingTiers
+      }];
+    });
+
+    // Trigger popup modal (Screenshot 2)
+    setAddedCartModalProduct({
+      ...product,
+      quantity: qty,
+      licenseType
+    });
+  };
+
+  const handleUpdateCartItem = (itemId, updates) => {
+    setCartItems(prev => prev.map(item => {
+      if (item.id === itemId) {
+        return { ...item, ...updates };
+      }
+      return item;
+    }));
+  };
+
+  const handleRemoveFromCart = (itemId) => {
+    setCartItems(prev => prev.filter(item => item.id !== itemId));
+  };
+
+  const handleEmptyCart = (silent = false) => {
+    setCartItems([]);
+  };
+
+  const handleToggleExtendedSupport = (itemId, enabled) => {
+    setCartItems(prev => prev.map(item => {
+      if (item.id === itemId) {
+        return { ...item, extendedSupport: enabled };
+      }
+      return item;
+    }));
+  };
+
+  const handleOpenCart = () => {
+    setCurrentView('cart');
+    window.location.hash = '#cart';
+    window.scrollTo(0, 0);
+  };
+
+  const handleGoToCheckout = () => {
+    setAddedCartModalProduct(null);
+    handleOpenCart();
   };
 
   // Render Private Admin Console or Login Gate
@@ -337,7 +451,8 @@ export default function App() {
         onExploreClick={handleExploreClick}
         onCategorySelect={handleCategorySelect}
         onSearchSubmit={handleHeroSearchSubmit}
-        cartCount={cartCount}
+        cartCount={totalCartCount}
+        onOpenCart={handleOpenCart}
         onHomeClick={handleBackToHome}
         onNavigateSection={handleNavigateSection}
         onOpenPortal={() => setPortalModalOpen(true)}
@@ -347,14 +462,25 @@ export default function App() {
         }}
       />
 
-      {currentView === 'product-detail' ? (
+      {currentView === 'cart' ? (
+        /* SHOPPING CART VIEW (Screenshot 3) */
+        <ShoppingCartPage 
+          cartItems={cartItems}
+          onContinueShopping={handleBackToHome}
+          onEmptyCart={handleEmptyCart}
+          onRemoveItem={handleRemoveFromCart}
+          onUpdateQuantity={(id, qty) => handleUpdateCartItem(id, { quantity: qty })}
+          onToggleExtendedSupport={handleToggleExtendedSupport}
+          onViewProduct={handleViewProduct}
+        />
+      ) : currentView === 'product-detail' ? (
         /* DEDICATED PUBLIC PRODUCT DETAIL PAGE */
         <ProductDetailPage 
           product={activeProduct}
           onBack={handleBackToHome}
           onLaunchDemo={handleLaunchDemo}
           onRequestQuote={(title) => setQuoteServiceTitle(title)}
-          onAddToCart={() => setCartCount(c => c + 1)}
+          onAddToCart={() => handleAddToCart(activeProduct)}
         />
       ) : (
         /* PUBLIC HOMEPAGE */
@@ -365,7 +491,7 @@ export default function App() {
             selectedCategory={selectedCategory}
           />
 
-          {/* STEP 2: Production-Ready Software Catalog */}
+          {/* STEP 2: Production-Ready Software Catalog (4 Cards per row) */}
           <FeaturedSoftware 
             products={products.filter(p => p.status !== 'draft')}
             selectedCategory={selectedCategory}
@@ -373,6 +499,7 @@ export default function App() {
             searchQuery={searchQuery}
             onViewDetails={handleViewProduct}
             onLaunchDemo={handleLaunchDemo}
+            onAddToCart={handleAddToCart}
           />
 
           {/* STEP 5: Browse by Industry */}
@@ -411,6 +538,16 @@ export default function App() {
           setCurrentView('admin');
         }}
       />
+
+      {/* POPUP MODAL: "Item added to your cart" (Screenshot 2) */}
+      {addedCartModalProduct && (
+        <AddedToCartModal 
+          product={addedCartModalProduct}
+          onClose={() => setAddedCartModalProduct(null)}
+          onGoToCheckout={handleGoToCheckout}
+          onUpdateCartItem={handleUpdateCartItem}
+        />
+      )}
 
       {/* CUSTOM QUOTE / CUSTOMIZATION INQUIRY MODAL */}
       {quoteServiceTitle && (

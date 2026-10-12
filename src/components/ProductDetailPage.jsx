@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   ArrowLeft, 
   Play, 
@@ -44,11 +44,12 @@ export default function ProductDetailPage({
   onAddToCart 
 }) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
-  const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'features' | 'demo' | 'tech' | 'requirements' | 'install'
   const [licenseType, setLicenseType] = useState('regular'); // 'regular' | 'extended'
   const [includeInstallation, setIncludeInstallation] = useState(false);
   const [galleryModalOpen, setGalleryModalOpen] = useState(false);
   const [copiedKey, setCopiedKey] = useState(null);
+
+
 
   if (!product) {
     return (
@@ -155,6 +156,19 @@ export default function ProductDetailPage({
     lastUpdate: 'September 2026'
   };
 
+  // Structured Tech Stack Items for visual pills and cards
+  const stackItems = (product.techStack && typeof product.techStack === 'string')
+    ? product.techStack.split(',').map(s => s.trim())
+    : Array.isArray(product.techStack)
+      ? product.techStack
+      : [
+          techSpecs.framework || 'Laravel 13',
+          techSpecs.language || 'PHP 8.2+',
+          techSpecs.database || 'MySQL 8.0+',
+          'Full Source Code',
+          'Docker Ready'
+        ];
+
   // Requirements fallback
   const requirements = (product.requirements && product.requirements.length > 0)
     ? product.requirements
@@ -231,6 +245,17 @@ export default function ProductDetailPage({
 
           <h1 className="detail-title">{product.name}</h1>
           <p className="detail-lead-summary">{product.shortDesc}</p>
+
+          {/* Visual Tech Stack Pills in Header */}
+          <div className="detail-techstack-pills-row">
+            <span className="techstack-label">TECH STACK:</span>
+            {stackItems.map((tech, idx) => (
+              <span key={idx} className="tech-pill-badge">
+                <Cpu size={12} className="text-gold" />
+                <span>{tech}</span>
+              </span>
+            ))}
+          </div>
 
           <div className="detail-meta-bar">
             <div className="meta-stars">
@@ -334,63 +359,12 @@ export default function ProductDetailPage({
               )}
             </div>
 
-            {/* Navigation Tabs Bar */}
-            <div className="detail-tabs-bar" role="tablist">
-              <button 
-                role="tab"
-                aria-selected={activeTab === 'overview'}
-                className={`detail-tab-btn ${activeTab === 'overview' ? 'tab-active' : ''}`}
-                onClick={() => setActiveTab('overview')}
-              >
-                <span>Overview & Fit</span>
-              </button>
-              <button 
-                role="tab"
-                aria-selected={activeTab === 'features'}
-                className={`detail-tab-btn ${activeTab === 'features' ? 'tab-active' : ''}`}
-                onClick={() => setActiveTab('features')}
-              >
-                <span>Features & Modules</span>
-              </button>
-              <button 
-                role="tab"
-                aria-selected={activeTab === 'demo'}
-                className={`detail-tab-btn ${activeTab === 'demo' ? 'tab-active' : ''}`}
-                onClick={() => setActiveTab('demo')}
-              >
-                <Play size={13} className="text-gold" />
-                <span>Live Demo & Logins</span>
-              </button>
-              <button 
-                role="tab"
-                aria-selected={activeTab === 'tech'}
-                className={`detail-tab-btn ${activeTab === 'tech' ? 'tab-active' : ''}`}
-                onClick={() => setActiveTab('tech')}
-              >
-                <span>Architecture & Specs</span>
-              </button>
-              <button 
-                role="tab"
-                aria-selected={activeTab === 'requirements'}
-                className={`detail-tab-btn ${activeTab === 'requirements' ? 'tab-active' : ''}`}
-                onClick={() => setActiveTab('requirements')}
-              >
-                <span>Requirements</span>
-              </button>
-              <button 
-                role="tab"
-                aria-selected={activeTab === 'install'}
-                className={`detail-tab-btn ${activeTab === 'install' ? 'tab-active' : ''}`}
-                onClick={() => setActiveTab('install')}
-              >
-                <span>Setup Guide</span>
-              </button>
-            </div>
+
 
             {/* ============================================================= */}
-            {/* TAB 1: OVERVIEW & ECOSYSTEM                                   */}
+            {/* SECTION 1: OVERVIEW & FIT                                     */}
             {/* ============================================================= */}
-            {activeTab === 'overview' && (
+            <section id="section-overview" className="detail-section-block">
               <div className="detail-tab-content">
                 <section className="detail-content-card">
                   <h2 className="content-card-title">Software Overview & Ecosystem</h2>
@@ -447,81 +421,12 @@ export default function ProductDetailPage({
                   </div>
                 </section>
               </div>
-            )}
+            </section>
 
             {/* ============================================================= */}
-            {/* TAB 2: FEATURES & MODULE BREAKDOWN                            */}
+            {/* SECTION 2: LIVE DEMO & TEST LOGINS (SECOND NUMBER)            */}
             {/* ============================================================= */}
-            {activeTab === 'features' && (
-              <div className="detail-tab-content">
-                
-                {/* Feature Groups (Structured Cards) */}
-                {product.featureGroups && product.featureGroups.length > 0 ? (
-                  <div className="feature-groups-container">
-                    {product.featureGroups.map((group, gIdx) => (
-                      <section key={gIdx} className="detail-content-card group-card">
-                        <div className="group-card-header">
-                          <div className="group-header-left">
-                            <span className="group-badge-icon">
-                              {group.icon === 'ShieldCheck' && <ShieldCheck size={18} className="text-gold" />}
-                              {group.icon === 'Briefcase' && <Briefcase size={18} className="text-gold" />}
-                              {group.icon === 'User' && <User size={18} className="text-gold" />}
-                              {group.icon === 'CreditCard' && <CreditCard size={18} className="text-gold" />}
-                              {group.icon === 'Globe' && <Globe size={18} className="text-gold" />}
-                              {!['ShieldCheck', 'Briefcase', 'User', 'CreditCard', 'Globe'].includes(group.icon) && <Sparkles size={18} className="text-gold" />}
-                            </span>
-                            <h3 className="group-title">{group.title}</h3>
-                          </div>
-                          <span className="group-count">{group.items?.length || 0} Features</span>
-                        </div>
-                        <div className="group-items-grid">
-                          {(group.items || []).map((item, iIdx) => (
-                            <div key={iIdx} className="group-item-row">
-                              <CheckCircle2 size={16} className="text-success flex-shrink-0" />
-                              <span>{item}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </section>
-                    ))}
-                  </div>
-                ) : (
-                  <section className="detail-content-card">
-                    <h2 className="content-card-title">Verified Core Capabilities</h2>
-                    <div className="features-checklist-grid">
-                      {(product.features || []).map((feat, idx) => (
-                        <div key={idx} className="feature-check-row">
-                          <CheckCircle2 size={18} className="text-success feature-icon" />
-                          <span className="feature-text">{feat}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </section>
-                )}
-
-                {/* Integrated Functional Modules */}
-                {product.modules && product.modules.length > 0 && (
-                  <section className="detail-content-card mt-4">
-                    <h2 className="content-card-title">Included Software Functional Modules</h2>
-                    <div className="modules-badge-grid">
-                      {product.modules.map((mod, idx) => (
-                        <div key={idx} className="module-item-card">
-                          <div className="module-index-pill">{idx + 1}</div>
-                          <h4 className="module-name">{mod}</h4>
-                          <span className="module-tag">Production Ready</span>
-                        </div>
-                      ))}
-                    </div>
-                  </section>
-                )}
-
-              </div>
-            )}
-
-            {/* ============================================================= */}
-            {/* TAB 3: LIVE DEMO & TEST LOGINS                                */}
-            {/* ============================================================= */}
-            {activeTab === 'demo' && (
+            <section id="section-demo" className="detail-section-block">
               <div className="detail-tab-content">
                 <section className="detail-content-card">
                   <div className="demo-header-banner">
@@ -641,41 +546,154 @@ export default function ProductDetailPage({
                   </div>
                 </section>
               </div>
-            )}
+            </section>
 
             {/* ============================================================= */}
-            {/* TAB 4: ARCHITECTURE & TECHNICAL SPECS                         */}
+            {/* SECTION 3: FEATURES & MODULE BREAKDOWN                        */}
             {/* ============================================================= */}
-            {activeTab === 'tech' && (
+            <section id="section-features" className="detail-section-block">
+              <div className="detail-tab-content">
+                
+                {/* Feature Groups (Structured Cards) */}
+                {product.featureGroups && product.featureGroups.length > 0 ? (
+                  <div className="feature-groups-container">
+                    {product.featureGroups.map((group, gIdx) => (
+                      <section key={gIdx} className="detail-content-card group-card">
+                        <div className="group-card-header">
+                          <div className="group-header-left">
+                            <span className="group-badge-icon">
+                              {group.icon === 'ShieldCheck' && <ShieldCheck size={18} className="text-gold" />}
+                              {group.icon === 'Briefcase' && <Briefcase size={18} className="text-gold" />}
+                              {group.icon === 'User' && <User size={18} className="text-gold" />}
+                              {group.icon === 'CreditCard' && <CreditCard size={18} className="text-gold" />}
+                              {group.icon === 'Globe' && <Globe size={18} className="text-gold" />}
+                              {!['ShieldCheck', 'Briefcase', 'User', 'CreditCard', 'Globe'].includes(group.icon) && <Sparkles size={18} className="text-gold" />}
+                            </span>
+                            <h3 className="group-title">{group.title}</h3>
+                          </div>
+                          <span className="group-count">{group.items?.length || 0} Features</span>
+                        </div>
+                        <div className="group-items-grid">
+                          {(group.items || []).map((item, iIdx) => (
+                            <div key={iIdx} className="group-item-row">
+                              <CheckCircle2 size={16} className="text-success flex-shrink-0" />
+                              <span>{item}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </section>
+                    ))}
+                  </div>
+                ) : (
+                  <section className="detail-content-card">
+                    <h2 className="content-card-title">Verified Core Capabilities</h2>
+                    <div className="features-checklist-grid">
+                      {(product.features || []).map((feat, idx) => (
+                        <div key={idx} className="feature-check-row">
+                          <CheckCircle2 size={18} className="text-success feature-icon" />
+                          <span className="feature-text">{feat}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                )}
+
+                {/* Integrated Functional Modules */}
+                {product.modules && product.modules.length > 0 && (
+                  <section className="detail-content-card mt-4">
+                    <h2 className="content-card-title">Included Software Functional Modules</h2>
+                    <div className="modules-badge-grid">
+                      {product.modules.map((mod, idx) => (
+                        <div key={idx} className="module-item-card">
+                          <div className="module-index-pill">{idx + 1}</div>
+                          <h4 className="module-name">{mod}</h4>
+                          <span className="module-tag">Production Ready</span>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                )}
+
+              </div>
+            </section>
+
+            {/* ============================================================= */}
+            {/* SECTION 4: ARCHITECTURE & TECHNICAL SPECS                     */}
+            {/* ============================================================= */}
+            <section id="section-tech" className="detail-section-block">
               <div className="detail-tab-content">
                 <section className="detail-content-card">
                   <div className="tech-header-line">
                     <Code2 size={20} className="text-gold" />
-                    <h2 className="content-card-title">Technology Stack & Specifications</h2>
+                    <h2 className="content-card-title">Technology Stack & System Architecture</h2>
                   </div>
-                  <p className="content-sub-text">Architectural details and file deliverables for technical evaluation.</p>
+                  <p className="content-sub-text">Complete architectural breakdown, framework components, and core runtime deliverables.</p>
 
+                  {/* Visual Tech Stack Cards Grid */}
+                  <div className="tech-stack-cards-grid">
+                    <div className="tech-card-item">
+                      <div className="tech-card-icon-wrap">
+                        <Layers size={18} />
+                      </div>
+                      <div className="tech-card-content">
+                        <span className="tech-card-lbl">Backend Framework</span>
+                        <strong className="tech-card-val font-mono">{techSpecs.framework}</strong>
+                      </div>
+                    </div>
+
+                    <div className="tech-card-item">
+                      <div className="tech-card-icon-wrap">
+                        <Code2 size={18} />
+                      </div>
+                      <div className="tech-card-content">
+                        <span className="tech-card-lbl">Language & Runtime</span>
+                        <strong className="tech-card-val font-mono">{techSpecs.language}</strong>
+                      </div>
+                    </div>
+
+                    <div className="tech-card-item">
+                      <div className="tech-card-icon-wrap">
+                        <Database size={18} />
+                      </div>
+                      <div className="tech-card-content">
+                        <span className="tech-card-lbl">Database Engine</span>
+                        <strong className="tech-card-val font-mono">{techSpecs.database}</strong>
+                      </div>
+                    </div>
+
+                    <div className="tech-card-item">
+                      <div className="tech-card-icon-wrap">
+                        <Globe size={18} />
+                      </div>
+                      <div className="tech-card-content">
+                        <span className="tech-card-lbl">Frontend Architecture</span>
+                        <strong className="tech-card-val">{techSpecs.frontend}</strong>
+                      </div>
+                    </div>
+
+                    <div className="tech-card-item">
+                      <div className="tech-card-icon-wrap">
+                        <Server size={18} />
+                      </div>
+                      <div className="tech-card-content">
+                        <span className="tech-card-lbl">Architecture Pattern</span>
+                        <strong className="tech-card-val">{techSpecs.architecture}</strong>
+                      </div>
+                    </div>
+
+                    <div className="tech-card-item">
+                      <div className="tech-card-icon-wrap">
+                        <Terminal size={18} />
+                      </div>
+                      <div className="tech-card-content">
+                        <span className="tech-card-lbl">Deployment & Containers</span>
+                        <strong className="tech-card-val">Docker / Nginx / Apache</strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Comprehensive Specifications Table */}
                   <div className="tech-specs-table">
-                    <div className="tech-spec-row">
-                      <span className="tech-spec-lbl">Core Framework</span>
-                      <span className="tech-spec-val font-mono"><strong>{techSpecs.framework}</strong></span>
-                    </div>
-                    <div className="tech-spec-row">
-                      <span className="tech-spec-lbl">Programming Language</span>
-                      <span className="tech-spec-val font-mono">{techSpecs.language}</span>
-                    </div>
-                    <div className="tech-spec-row">
-                      <span className="tech-spec-lbl">Database Engine</span>
-                      <span className="tech-spec-val font-mono">{techSpecs.database}</span>
-                    </div>
-                    <div className="tech-spec-row">
-                      <span className="tech-spec-lbl">Frontend Architecture</span>
-                      <span className="tech-spec-val">{techSpecs.frontend}</span>
-                    </div>
-                    <div className="tech-spec-row">
-                      <span className="tech-spec-lbl">Architectural Pattern</span>
-                      <span className="tech-spec-val">{techSpecs.architecture}</span>
-                    </div>
                     <div className="tech-spec-row">
                       <span className="tech-spec-lbl">Files Included</span>
                       <span className="tech-spec-val">{techSpecs.filesIncluded}</span>
@@ -685,22 +703,30 @@ export default function ProductDetailPage({
                       <span className="tech-spec-val font-mono">{techSpecs.softwareVersion}</span>
                     </div>
                     <div className="tech-spec-row">
-                      <span className="tech-spec-lbl">First Release</span>
+                      <span className="tech-spec-lbl">First Production Release</span>
                       <span className="tech-spec-val">{techSpecs.firstRelease}</span>
                     </div>
                     <div className="tech-spec-row">
                       <span className="tech-spec-lbl">Last Production Update</span>
                       <span className="tech-spec-val">{techSpecs.lastUpdate}</span>
                     </div>
+                    <div className="tech-spec-row">
+                      <span className="tech-spec-lbl">Source Code Deliverable</span>
+                      <span className="tech-spec-val text-success"><strong>100% Full Source Code (Unencrypted)</strong></span>
+                    </div>
+                    <div className="tech-spec-row">
+                      <span className="tech-spec-lbl">License Model</span>
+                      <span className="tech-spec-val">Perpetual Single-Vendor Self-Hosted</span>
+                    </div>
                   </div>
                 </section>
               </div>
-            )}
+            </section>
 
             {/* ============================================================= */}
-            {/* TAB 5: SERVER REQUIREMENTS                                    */}
+            {/* SECTION 5: SERVER REQUIREMENTS                                */}
             {/* ============================================================= */}
-            {activeTab === 'requirements' && (
+            <section id="section-requirements" className="detail-section-block">
               <div className="detail-tab-content">
                 <section className="detail-content-card">
                   <div className="tech-header-line">
@@ -723,17 +749,17 @@ export default function ProductDetailPage({
                     <ShieldCheck size={18} className="text-gold flex-shrink-0" />
                     <div>
                       <strong>Need Server Installation Assistance?</strong>
-                      <p>Select the optional PHP/Node Installation Support option on the right sidebar, and our certified engineers will handle full configuration for you.</p>
+                      <p>Select the optional Server Installation Service option on the right sidebar, and our certified engineers will handle full configuration for you.</p>
                     </div>
                   </div>
                 </section>
               </div>
-            )}
+            </section>
 
             {/* ============================================================= */}
-            {/* TAB 6: SETUP & INSTALLATION GUIDE                             */}
+            {/* SECTION 6: SETUP & INSTALLATION GUIDE                         */}
             {/* ============================================================= */}
-            {activeTab === 'install' && (
+            <section id="section-install" className="detail-section-block">
               <div className="detail-tab-content">
                 <section className="detail-content-card">
                   <div className="tech-header-line">
@@ -759,7 +785,7 @@ export default function ProductDetailPage({
                   </div>
                 </section>
               </div>
-            )}
+            </section>
 
           </div>
 

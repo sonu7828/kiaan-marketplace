@@ -22,6 +22,7 @@ export default function Header({
   onCategorySelect, 
   onSearchSubmit: _onSearchSubmit,
   cartCount = 0,
+  onOpenCart,
   onHomeClick,
   onNavigateSection,
   onOpenPortal,
@@ -196,25 +197,24 @@ export default function Header({
               <span>Admin Login</span>
             </button>
 
-            {cartCount > 0 && (
-              <button 
-                type="button" 
-                className="cart-btn" 
-                onClick={onExploreClick}
-                aria-label="View Cart"
-              >
-                <ShoppingCart size={16} />
-                <span className="cart-badge">{cartCount}</span>
-              </button>
-            )}
-
-            {/* 8. Important Primary Action */}
+            {/* 8. Dedicated Cart Action Button (Replaced Explore Catalog) */}
             <button 
               type="button" 
-              className="btn btn-primary btn-sm cta-explore-btn"
-              onClick={onExploreClick}
+              className="navbar-cart-action-btn"
+              onClick={onOpenCart || onExploreClick}
+              title="View Shopping Cart"
+              aria-label="View Shopping Cart"
             >
-              <span>Explore Catalog</span>
+              <div className="navbar-cart-icon-box">
+                <ShoppingCart size={17} />
+                {cartCount > 0 && (
+                  <span className="navbar-cart-badge-count">{cartCount}</span>
+                )}
+              </div>
+              <span className="navbar-cart-label">Cart</span>
+              {cartCount > 0 && (
+                <span className="navbar-cart-chip">({cartCount})</span>
+              )}
             </button>
 
             {/* Mobile Hamburger Button */}
@@ -347,13 +347,15 @@ export default function Header({
                 </button>
                 <button 
                   type="button" 
-                  className="btn btn-primary w-full"
+                  className="btn btn-primary w-full mobile-drawer-cart-btn"
                   onClick={() => {
                     setMobileMenuOpen(false);
-                    onExploreClick();
+                    if (onOpenCart) onOpenCart();
+                    else onExploreClick();
                   }}
                 >
-                  <span>Explore Software Catalog</span>
+                  <ShoppingCart size={16} />
+                  <span>View Cart ({cartCount} {cartCount === 1 ? 'item' : 'items'})</span>
                 </button>
               </div>
 
